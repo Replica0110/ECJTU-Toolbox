@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_jwxt">
+
+    <fragment
+        android:id="@+id/nav_jwxt"
+        android:name="com.lonx.ecjtutoolbox.ui.jwxt.JWXTFragment"
+        android:label="@string/menu_jwxt"
+        tools:layout="@layout/fragment_jwxt" />
+    <fragment
+        android:id="@+id/nav_account"
+        android:name="com.lonx.ecjtutoolbox.ui.account.AccountFragment"
+        android:label="@string/menu_account"
+        tools:layout="@layout/fragment_account" />
+    <fragment
+        android:id="@+id/nav_wifi"
+        android:name="com.lonx.ecjtutoolbox.ui.wifi.WIFIFragment"
+        android:label="@string/menu_wifi"
+        tools:layout="@layout/fragment_wifi" />
+    <fragment
+        android:id="@+id/nav_about"
+        android:name="com.lonx.ecjtutoolbox.ui.about.AboutFragment"
+        android:label="@string/menu_about"
+        tools:layout="@layout/fragment_about" />
+
+</navigation>

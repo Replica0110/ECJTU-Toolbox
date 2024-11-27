@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">花椒工具箱</string>
+    <string name="navigation_drawer_open">打开侧边栏</string>
+    <string name="navigation_drawer_close">关闭侧边栏</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">导航栏顶部</string>
+    <string name="action_settings">设置</string>
+
+    <string name="menu_jwxt">教务系统</string>
+    <string name="menu_account">账号</string>
+    <string name="menu_about">关于</string>
+    <string name="tile_click2login">一键登录</string>
+    <string name="dialog_account_stuid_hint">输入智慧交大账号</string>
+    <string name="dialog_account_password_hint">输入智慧交大密码</string>
+    <string name="dialog_account_choose_isp">选择运营商</string>
+    <string name="dialog_account_login_btn">登录</string>
+    <string name="menu_wifi">校园网</string>
+    <string name="layout_empty_text">暂无数据</string>
+    <string name="menu_score">成绩查询</string>
+    <string name="menu_gpa">绩点查询</string>
+    <string name="add">添加账号</string>
+    <string name="dialog_account_tips">使用校园网时需要选择运营商以登录，若不需要可不选择</string>
+</resources>
