@@ -9,6 +9,8 @@ import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
+import org.koin.java.KoinJavaComponent.inject
+import slimber.log.e
 
 class ElectiveCourseApi(client: JWXTApi) {
     private val api: JWXTApi = client
@@ -33,15 +35,12 @@ class ElectiveCourseApi(client: JWXTApi) {
                     teacher = columns[9].text() // 任课教师
                 )
             } catch (e: Exception) {
-                Log.e(TAG,"Failed to parse row: $row, error: ${e.message}")
+                e { "Failed to parse row: " + row + ", error: " + e.message }
                 null
             }
         }
     }
     suspend fun fetchCourses(semester: String? = null): List<ElectiveCourseInfo> = withContext(Dispatchers.IO) {
         fetchEleCourses(semester ?: "")
-    }
-    companion object {
-        const val TAG = "ElectiveCourseApi"
     }
 }

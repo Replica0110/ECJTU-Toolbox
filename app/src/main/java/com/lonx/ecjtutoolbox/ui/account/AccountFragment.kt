@@ -1,7 +1,6 @@
 package com.lonx.ecjtutoolbox.ui.account
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -14,16 +13,15 @@ import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.lonx.ecjtutoolbox.R
 import com.lonx.ecjtutoolbox.api.JWXTApi
 import com.lonx.ecjtutoolbox.databinding.FragmentAccountBinding
 import com.lonx.ecjtutoolbox.utils.PreferencesManager
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AccountFragment : Fragment() {
@@ -32,6 +30,7 @@ class AccountFragment : Fragment() {
     private var studId: String = ""
     private var stuPassword: String = ""
     private var isp: Int = 1
+    private val jwxtApi: JWXTApi by inject()
     private val binding get() = _binding!!
     private val preferencesManager by lazy {
         PreferencesManager.getInstance(requireContext())
@@ -46,7 +45,6 @@ class AccountFragment : Fragment() {
         // 观察 LiveData 更新 UI
         accountViewModel.userProfile.observe(viewLifecycleOwner) { profile ->
             binding.m = profile
-            Log.e("AccountFragment", "Profile received: $profile")
         }
 
         // 加载用户数据
@@ -97,9 +95,9 @@ class AccountFragment : Fragment() {
                 preferencesManager.putString("student_pwd", stuPassword)
                 preferencesManager.putInt("isp", isp)
                 try {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        val jwxtapi= JWXTApi(studId, stuPassword)
-                        val state = jwxtapi.login()
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        jwxtApi.updateInfo(studId,stuPassword) // 更新账号信息
+                        val state = jwxtApi.login(true)
                         withContext(Dispatchers.Main) {Toast.makeText(requireContext(), state, Toast.LENGTH_LONG).show()}
                     }
 

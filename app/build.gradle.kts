@@ -43,7 +43,9 @@ android {
 
 dependencies {
     implementation(libs.koin.android)
+    implementation(libs.slimber)
     implementation(libs.brv)
+    implementation(libs.persistentcookiejar)
     implementation(libs.statusbar)
     implementation(libs.engine)
     implementation(libs.jsoup.jsoup)

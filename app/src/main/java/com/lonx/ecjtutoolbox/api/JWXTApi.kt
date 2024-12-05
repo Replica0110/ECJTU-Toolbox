@@ -1,63 +1,91 @@
 package com.lonx.ecjtutoolbox.api
 
-import android.util.Log
+import android.content.Context
+import android.content.pm.PackageManager
+import com.franmontiel.persistentcookiejar.PersistentCookieJar
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import com.google.gson.reflect.TypeToken
 import com.lonx.ecjtutoolbox.utils.Constants.CAS_ECJTU_DOMAIN
 import com.lonx.ecjtutoolbox.utils.Constants.ECJTU2JWXT_URL
 import com.lonx.ecjtutoolbox.utils.Constants.ECJTU_LOGIN_URL
 import com.lonx.ecjtutoolbox.utils.Constants.GET_STU_INFO_URL
 import com.lonx.ecjtutoolbox.utils.Constants.GET_STU_PROFILE_URL
-import com.lonx.ecjtutoolbox.utils.Constants.JWXT_ECJTU_DOMAIN
 import com.lonx.ecjtutoolbox.utils.Constants.JWXT_LOGIN_URL
 import com.lonx.ecjtutoolbox.utils.Constants.PORTAL_ECJTU_DOMAIN
 import com.lonx.ecjtutoolbox.utils.Constants.PWD_ENC_URL
 import com.lonx.ecjtutoolbox.utils.Constants.STU_AVATAR_L_URL
 import com.lonx.ecjtutoolbox.utils.Constants.USER_AGENT
-import com.lonx.ecjtutoolbox.utils.CookieJarImpl
-import com.lonx.ecjtutoolbox.utils.SSLManager.getUnsafeSslSocketFactory
-import com.lonx.ecjtutoolbox.utils.SSLManager.getUnsafeTrustManager
+import com.lonx.ecjtutoolbox.utils.PreferencesManager
 import com.lonx.ecjtutoolbox.utils.StuProfileInfo
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import okhttp3.Cookie
 import okhttp3.FormBody
 import okhttp3.Headers
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import org.jsoup.Jsoup
+import slimber.log.d
+import slimber.log.e
 import java.io.IOException
-import java.util.concurrent.TimeUnit
 
 class JWXTApi(
-    private val studId: String?,
-    private val password: String?,
-    private val cookieJar: CookieJarImpl = CookieJarImpl()
+    studId: String,
+    stuPwd: String,
+    private val cookieJar: PersistentCookieJar,
+    private val client: OkHttpClient
 ) {
-
     private val maxRetries = 5
-    private val timeout: Long = 30
-    private val client: OkHttpClient = OkHttpClient.Builder()
-        .sslSocketFactory(getUnsafeSslSocketFactory(), getUnsafeTrustManager())
-        .hostnameVerifier { _, _ -> true }
-        .cookieJar(cookieJar)
-        .cache(null)
-        .connectTimeout(timeout, TimeUnit.SECONDS)
-        .readTimeout(timeout, TimeUnit.SECONDS)
-        .writeTimeout(timeout, TimeUnit.SECONDS)
-        .build()
+    private var studentId:String = studId
+    private var studentPassword: String = stuPwd
+    fun updateInfo(studentId: String, studentPwd: String){
+        this.studentId = studentId
+        this.studentPassword = studentPwd
+    }
+    fun hasLogin(type: Int = 0): Boolean {
+        // 需要检查的域名
+        val urlsToCheck = listOf(
+            ECJTU_LOGIN_URL,  // 登录时需要检查的域名
+            JWXT_LOGIN_URL, // 登录后需要检查的域名
+        )
 
-    val hasLogin: Boolean
-        get() = cookieJar.hasCookie("CASTGC")
+        // 获取存储的 cookies（可能包含多个域名的 cookies）
+        val allCookies = mutableListOf<Cookie>()
+        // 获取 cookies
+        urlsToCheck.forEach { url ->
+            val httpUrl = url.toHttpUrl()
+            val cookiesForDomain = cookieJar.loadForRequest(httpUrl)
+            allCookies.addAll(cookiesForDomain)
+        }
+        e { "All cookies: $allCookies" }
+        return when (type) {
+            0 -> {
+                // 仅检查 CASTGC cookie
+
+                e { "CASTGC cookie found: ${allCookies.any { it.name == "CASTGC" && it.value.isNotEmpty() }}" }
+                allCookies.any { it.name == "CASTGC" && it.value.isNotEmpty() }
+            }
+            1 -> {
+                // 检查是否有完整的 cookie 集合
+                val requiredCookies = listOf("CASTGC", "JSESSIONID")
+                requiredCookies.all { cookieName ->
+                    e { "Checking cookie: $cookieName" }
+                    allCookies.any { it.name == cookieName && it.value.isNotEmpty() }
+                }
+            }
+            else -> false
+        }
+    }
+
+
 
     private suspend fun profile(): StuProfileInfo {
         val response = get(GET_STU_INFO_URL)
@@ -137,7 +165,7 @@ class JWXTApi(
         return try {
             profile()
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to get profile",e)
+            e { "获取个人资料失败: ${e.message}" }
             StuProfileInfo.fromData(emptyList())
         }
     }
@@ -150,10 +178,10 @@ class JWXTApi(
             .url(PWD_ENC_URL)
             .post(formBody)
             .build()
-
+        d {"密码加密中..."}
         client.newCall(request).execute().use { response ->
             if (!response.isSuccessful) {
-                Log.e(TAG,"Failed to get encrypted password: ${response.code}")
+                e { "密码加密失败: ${response.code}" }
             }
 
             val responseBody = response.body?.string()?: ""
@@ -163,13 +191,16 @@ class JWXTApi(
         }
     }
 
-    suspend fun login(): String = withContext(Dispatchers.IO){
-        println("Logging in...")
-
-        val encPassword = password?.let { getEncryptedPassword(it) }
+    suspend fun login(refresh: Boolean): String = withContext(Dispatchers.IO){
+        d { "登录中..."}
+        if (refresh) {
+            e { "刷新登录..."}
+            cookieJar.clear()
+        }
+        val encPassword = getEncryptedPassword(studentPassword)
 
         val loginPayload = mapOf(
-            "username" to (studId ?: throw IllegalArgumentException("Student ID is required")),
+            "username" to (studentId ?: throw IllegalArgumentException("Student ID is required")),
             "password" to encPassword,
             "service" to PORTAL_ECJTU_DOMAIN
         )
@@ -214,7 +245,7 @@ class JWXTApi(
 
         if (loginResponse != null) {
             if (!loginResponse.isSuccessful || !loginResponse.headers("Set-Cookie").any { it.contains("CASTGC") }) {
-                Log.e(TAG,"Login failed: Invalid account or password")
+                e { "登录失败：账号或密码错误" }
                 return@withContext "登录失败：账号或密码错误"
             }
         }
@@ -247,11 +278,10 @@ class JWXTApi(
         }
 
         if (finalResponse != null && finalResponse.code != 200) {
-            Log.e(TAG,"Error in JWXT system, login failed: ${finalResponse.code}")
+            e { "登录失败：重定向错误，状态码${finalResponse.code}" }
             return@withContext "登录失败：教务系统错误，错误码${finalResponse.code}"
         }
-//        Log.e(TAG, "Login successful")
-        println(finalResponse?.code)
+        d { "登录成功" }
         return@withContext "登录成功"
     }
 
@@ -260,8 +290,9 @@ class JWXTApi(
         formData: Map<String, String>? = null,
         currentRetries: Int = 0,
         headers: (Request.Builder) -> Unit = {}
-    ): Response {
-        if (!hasLogin) login()
+    ): Response = withContext(Dispatchers.IO){
+        d { "POST $url" }
+        if (!hasLogin()) login(false)
 
         val bodyBuilder = FormBody.Builder()
         formData?.forEach { (key, value) -> bodyBuilder.add(key, value) }
@@ -274,7 +305,7 @@ class JWXTApi(
 
         val request = requestBuilder.build()
 
-        return try {
+        return@withContext try {
             client.newCall(request).execute()
         } catch (e: Exception) {
             if (currentRetries >= maxRetries) throw e
@@ -287,8 +318,9 @@ class JWXTApi(
         params: Map<String, String>? = null,
         headers: Map<String, String>? = null,
         currentRetries: Int = 0
-    ): Response {
-        if (!hasLogin) login()
+    ): Response = withContext(Dispatchers.IO){
+        d { "GET $url" }
+        if (!hasLogin()) login(false)
 
         val urlBuilder = url.toHttpUrlOrNull()?.newBuilder()
         params?.forEach { (key, value) -> urlBuilder?.addQueryParameter(key, value) }
@@ -304,13 +336,8 @@ class JWXTApi(
             if (currentRetries >= maxRetries) {
                 throw IOException("Max retries exceeded with URL: $url")
             }
-            return get(url, params, headers, currentRetries + 1)
+            return@withContext get(url, params, headers, currentRetries + 1)
         }
-        return response
+        return@withContext response
     }
-
-    companion object {
-        const val TAG = "JWXTApi"
-    }
-
 }

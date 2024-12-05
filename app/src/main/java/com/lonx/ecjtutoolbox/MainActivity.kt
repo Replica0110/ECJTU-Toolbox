@@ -3,7 +3,6 @@ package com.lonx.ecjtutoolbox
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.GravityCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigator
@@ -18,6 +17,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
+import slimber.log.e
+import timber.log.Timber
 
 
 class MainActivity : AppCompatActivity() {
@@ -29,9 +30,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var stuProfileInfo: StuProfileInfo
 
     private val jwxtApi: JWXTApi by inject()
-    private val preferencesManager: PreferencesManager by inject()
+    private val preferencesManager: PreferencesManager by lazy { PreferencesManager.getInstance(this) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Timber.plant(Timber.DebugTree())
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
@@ -54,28 +56,34 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initLogin(){
+
         stuId = preferencesManager.getString("student_id", "")
         stuPassword = preferencesManager.getString("student_pwd", "")
         isp = preferencesManager.getInt("isp", 1)
+
+        val isLogin = jwxtApi.hasLogin(1)
+        e { "isLogin: $isLogin" }
+        if (isLogin) {
+            Toast.makeText(this, "已登录", Toast.LENGTH_SHORT).show()
+            return
+        }
         if (stuId.isEmpty() || stuPassword.isEmpty()) {
             Toast.makeText(this, "请先设置学号和密码", Toast.LENGTH_SHORT).show()
             return
         }
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                val loginResult = jwxtApi.login()
+                val loginResult = jwxtApi.login(false)
                 withContext(Dispatchers.Main) {
                     binding.drawer.closeDrawers()
                     Toast.makeText(this@MainActivity, loginResult, Toast.LENGTH_LONG).show()
                 }
             } catch (e: Exception){
-                e.printStackTrace()
-                Toast.makeText(this@MainActivity, "未知错误：${e.message}", Toast.LENGTH_SHORT).show()
+                e { "未知错误：${e}" }
+                withContext(Dispatchers.Main){
+                    Toast.makeText(this@MainActivity, "未知错误：${e.message}", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
-    companion object {
-        const val TAG = "MainActivity"
-    }
-
 }

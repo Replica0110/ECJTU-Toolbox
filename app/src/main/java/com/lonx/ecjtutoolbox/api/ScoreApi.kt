@@ -5,9 +5,9 @@ import android.util.Log
 import com.lonx.ecjtutoolbox.utils.Constants.GET_GPA_URL
 import com.lonx.ecjtutoolbox.utils.ScoreInfo
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
+import slimber.log.e
 
 class ScoreApi(client: JWXTApi) {
     private val api: JWXTApi = client
@@ -49,11 +49,8 @@ class ScoreApi(client: JWXTApi) {
         try {
             return score(semester)
         } catch (e: Exception) {
-            Log.e(TAG,"Error occurred: ${e.message}")
+            e{"Error occurred: ${e.message}"}
             return mutableListOf()
         }
-    }
-    companion object {
-        const val TAG = "ScoreApi"
     }
 }

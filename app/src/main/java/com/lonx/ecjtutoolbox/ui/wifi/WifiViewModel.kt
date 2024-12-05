@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class WIFIViewModel : ViewModel() {
+class WifiViewModel : ViewModel() {
     private val _text = MutableLiveData<String>().apply {
         value = "校园网登录页面"
     }

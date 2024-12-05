@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.lonx.ecjtutoolbox.databinding.FragmentWifiBinding
 
-class WIFIFragment : Fragment() {
+class WifiFragment : Fragment() {
     private var _binding: FragmentWifiBinding? = null
     private val binding get() = _binding!!
 
@@ -19,7 +19,7 @@ class WIFIFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val viewModel =
-            ViewModelProvider(this)[WIFIViewModel::class.java]
+            ViewModelProvider(this)[WifiViewModel::class.java]
 
         _binding = FragmentWifiBinding.inflate(inflater, container, false)
         val root: View = binding.root

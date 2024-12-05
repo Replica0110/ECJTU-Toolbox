@@ -10,17 +10,18 @@ import android.service.quicksettings.TileService
 import androidx.core.app.NotificationCompat
 import com.lonx.ecjtutoolbox.MainActivity
 import com.lonx.ecjtutoolbox.R
-import com.lonx.ecjtutoolbox.api.WIFIApi
+import com.lonx.ecjtutoolbox.api.WifiApi
 import com.lonx.ecjtutoolbox.utils.NetworkType
 import com.lonx.ecjtutoolbox.utils.PreferencesManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 
 class TileService : TileService() {
 
-    private val wifiApi by lazy { WIFIApi() }
-    private val preferencesManager by lazy { PreferencesManager.getInstance(this) }
+    private val wifiApi by lazy { WifiApi() }
+    private val preferencesManager by inject<PreferencesManager>()
 
     private companion object {
         const val CHANNEL_ID = "ecjtutoolbox_channel"

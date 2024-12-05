@@ -3,18 +3,19 @@ package com.lonx.ecjtutoolbox.api
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.util.Log
 import com.lonx.ecjtutoolbox.utils.NetworkType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import slimber.log.d
+import slimber.log.e
 import java.io.IOException
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.util.concurrent.TimeUnit
 
-class WIFIApi {
+class WifiApi {
     fun getNetworkType(context: Context): NetworkType {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val network = connectivityManager.activeNetwork
@@ -40,12 +41,12 @@ class WIFIApi {
             else -> "unicom"
         }
 
-        Log.d(TAG, "开始创建OkHttpClient对象")
+        d{"开始创建OkHttpClient对象"}
         val client = OkHttpClient.Builder()
             .followRedirects(false)
             .build()
 
-        Log.d(TAG, "开始准备请求头")
+        d { "开始准备请求头" }
         val mediaType = "application/x-www-form-urlencoded".toMediaType()
         val postBody = "DDDDD=%2C0%2C$studentID@$strTheISP&upass=$passwordECJTU&R1=0&R2=0&R3=0&R6=0&para=00&0MKKey=123456&buttonClicked=&redirect_url=&err_flag=&username=&password=&user=&cmd=&Login="
         val request = Request.Builder()
@@ -53,7 +54,7 @@ class WIFIApi {
             .post(postBody.toRequestBody(mediaType))
             .build()
 
-        Log.d(TAG, "开始发送请求")
+        d { "开始发送请求" }
         val call = client.newCall(request)
         return try {
             val response = call.execute()
@@ -72,42 +73,42 @@ class WIFIApi {
                         "512" -> "E3 AC认证失败(可能重复登录)"
                         "Rad:Oppp error: Limit Users Err" -> "E3 超出校园网设备数量限制"
                         else -> {
-                            Log.e(TAG, "登录未知错误码 ")
+                            e { "未知错误码" }
                             "E4 登录失败：\n未知错误"
                         }
                     }
                 }
-                Log.e(TAG, "错误码为空：$headers")
+                e{"错误码为空：${headers}"}
                 "E2 无法解析回包数据：$headers"
             } else {
-                Log.e(TAG, "登录返回头找不到重定向字段：$headers")
+                e { "登录返回头找不到重定向字段：${headers}" }
                 "E1 无法解析回包数据：$headers"
             }
         } catch (e: IOException) {
-            Log.e(TAG, "登录时捕获到异常：$e")
+            e(e) { "登录请求异常"}
             "E0 发送登录请求失败，捕获到异常：${e.message}"
         }
     }
 
     fun getState(): Int {
-        Log.d(TAG, "开始创建OkHttpClient对象")
+        d { "开始创建OkHttpClient对象" }
         val client = OkHttpClient.Builder()
             .connectTimeout(2, TimeUnit.SECONDS)
             .readTimeout(4, TimeUnit.SECONDS)
             .build()
 
-        Log.d(TAG, "开始准备请求头")
+        d{"开始准备请求头"}
         val request = Request.Builder()
             .url("http://172.16.2.100")
             .get()
             .build()
 
-        Log.d(TAG, "开始发送请求")
+        d{"开始发送请求"}
         val call = client.newCall(request)
         return try {
             val response = call.execute()
             if (response.code == 200) {
-                Log.d(TAG, "get请求成功")
+                d{"get请求成功"}
                 val responseBody = response.body?.string() ?: ""
                 if (responseBody.contains("<title>注销页</title>")) {
                     4
@@ -115,7 +116,7 @@ class WIFIApi {
                     3
                 }
             } else {
-                Log.e(TAG, "奇怪的http状态码：${response.code}\n${response.headers}\n${response.body?.string()}")
+                e{"奇怪的http状态码：${response.code}\n${response.headers}\n${response.body?.string()}"}
                 2
             }
         } catch (e: IOException) {
@@ -123,13 +124,10 @@ class WIFIApi {
                 is SocketTimeoutException -> 2
                 is ConnectException -> 1
                 else -> {
-                    Log.e(TAG, "奇怪的异常捕获：$e")
+                    e{"奇怪的异常捕获：$e"}
                     2
                 }
             }
         }
-    }
-    companion object {
-        const val TAG = "WIFIApi"
     }
 }

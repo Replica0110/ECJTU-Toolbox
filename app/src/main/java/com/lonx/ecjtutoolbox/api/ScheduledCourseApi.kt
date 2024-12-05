@@ -1,23 +1,22 @@
 package com.lonx.ecjtutoolbox.api
 
-import android.util.Log
 import com.lonx.ecjtutoolbox.utils.Constants.GET_CLASSES_URL
 import com.lonx.ecjtutoolbox.utils.Constants.WEIXIN_JWXT_URL
 import com.lonx.ecjtutoolbox.utils.ScheduledCourseInfo
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
+import slimber.log.e
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
 class ScheduledCourseApi(client: JWXTApi) {
 
-    private val api: JWXTApi= client
-    private suspend fun course(
+    private val api: JWXTApi = client
+    private suspend fun courseByjwxt(
         date: String = formattedDate(Date())
     ):List<ScheduledCourseInfo>{
         val response = api.post(GET_CLASSES_URL, mapOf("date" to date))
@@ -32,7 +31,7 @@ class ScheduledCourseApi(client: JWXTApi) {
         return dateFormat.format(date)
     }
 
-    private suspend fun course(
+    private suspend fun courseByweixinid(
         date: String = formattedDate(Date()),
         weixinid: String
     ):List<ScheduledCourseInfo> = withContext(Dispatchers.IO){
@@ -78,20 +77,17 @@ class ScheduledCourseApi(client: JWXTApi) {
         return@withContext courseList
     }
 
-    companion object {
-        const val TAG = "ScheduledCourseApi"
-    }
     suspend fun getCourse(
         weixinid: String =""
     ):List<ScheduledCourseInfo> = withContext(Dispatchers.IO){
         try {
             if (weixinid.isNotEmpty()){
-                return@withContext course()
+                return@withContext courseByjwxt()
             }else {
-                return@withContext course(weixinid = weixinid)
+                return@withContext courseByweixinid(weixinid = weixinid)
             }
         } catch (e: Exception) {
-            Log.e(TAG,"Error occurred: ${e.message}")
+            e { "出现错误: ${e.message}" }
             return@withContext emptyList()
         }
 

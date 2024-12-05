@@ -7,7 +7,7 @@ import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 
 class GPAApi(client: JWXTApi) {
-    private val api:JWXTApi = client
+    private val api: JWXTApi = client
     private suspend fun gpa(): GPAInfo = withContext(Dispatchers.IO){
         val response = api.get(url= GET_GPA_URL)
 

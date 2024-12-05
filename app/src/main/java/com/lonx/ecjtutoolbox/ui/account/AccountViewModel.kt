@@ -10,6 +10,7 @@ import com.lonx.ecjtutoolbox.utils.StuProfileInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
+import timber.log.Timber
 
 class AccountViewModel(private val jwxtApi: JWXTApi) : ViewModel() {
     private val _userProfile = MutableLiveData<StuProfileInfo>()
@@ -23,7 +24,7 @@ class AccountViewModel(private val jwxtApi: JWXTApi) : ViewModel() {
 //                Log.e("AccountViewModel", "Profile loaded: $profile")
                 _userProfile.postValue(profile) // 更新数据
             } catch (e: Exception) {
-                Log.e("AccountViewModel", "Failed to load user profile", e)
+                Timber.tag("AccountViewModel").e(e, "Failed to load user profile")
             }
         }
     }
