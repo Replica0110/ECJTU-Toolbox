@@ -194,7 +194,7 @@ class JWXTApi(
         val encPassword = getEncryptedPassword(studentPassword)
 
         val loginPayload = mapOf(
-            "username" to (studentId ?: throw IllegalArgumentException("Student ID is required")),
+            "username" to studentId,
             "password" to encPassword,
             "service" to PORTAL_ECJTU_DOMAIN
         )

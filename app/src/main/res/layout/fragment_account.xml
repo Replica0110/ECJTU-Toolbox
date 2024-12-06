@@ -6,14 +6,6 @@
         <import type="com.lonx.ecjtutoolbox.utils.StuProfileInfo"/>
         <variable name="m" type="StuProfileInfo" />
     </data>
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="4dp"
-        android:padding="8dp"
-        android:layout_margin="16dp">
-
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -47,8 +39,6 @@
             app:layout_constraintBottom_toBottomOf="@+id/ivAvatar"
             tools:text="用户名" />
 
-
-
         <!-- 性别 -->
         <TextView
             android:id="@+id/tvSex"
@@ -61,32 +51,60 @@
             app:layout_constraintStart_toEndOf="@+id/tvName"
             app:layout_constraintBottom_toBottomOf="@+id/tvName"
             tools:text="性别"  />
+        <View
+            android:id="@+id/line1"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="20dp"
+            android:background="@android:color/darker_gray"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ivAvatar"/>
         <!-- 学号 -->
         <TextView
             android:id="@+id/tvIdNumber"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@{`学号：`+m.idNumber}"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textColor="@color/secondaryText"
             app:layout_constraintStart_toStartOf="@+id/ivAvatar"
-            app:layout_constraintTop_toBottomOf="@+id/ivAvatar"
+            app:layout_constraintTop_toBottomOf="@+id/line1"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="16dp"
+            android:padding="8dp"
             tools:text="学号" />
+
+        <!-- 分割线 1 -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            app:layout_constraintStart_toStartOf="@+id/tvIdNumber"
+            app:layout_constraintEnd_toEndOf="@+id/tvIdNumber"
+            app:layout_constraintTop_toBottomOf="@+id/tvIdNumber"/>
+
         <!-- 用户ID -->
         <TextView
             android:id="@+id/tvUserId"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@{`用户ID：`+m.userId}"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textColor="@color/primaryText"
             app:layout_constraintStart_toStartOf="@+id/ivAvatar"
             app:layout_constraintTop_toBottomOf="@+id/tvIdNumber"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="16dp"
+            android:padding="8dp"
             tools:text="用户ID"  />
+
+        <!-- 分割线 2 -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            app:layout_constraintStart_toStartOf="@+id/tvUserId"
+            app:layout_constraintEnd_toEndOf="@+id/tvUserId"
+            app:layout_constraintTop_toBottomOf="@+id/tvUserId"/>
 
         <!-- 单位 -->
         <TextView
@@ -94,13 +112,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@{`单位：`+m.UnitName}"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textColor="@color/primaryText"
             app:layout_constraintStart_toStartOf="@+id/ivAvatar"
             app:layout_constraintTop_toBottomOf="@+id/tvUserId"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="8dp"
+            android:padding="8dp"
             tools:text="单位"  />
+
+        <!-- 分割线 3 -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            app:layout_constraintStart_toStartOf="@+id/tvUnitName"
+            app:layout_constraintEnd_toEndOf="@+id/tvUnitName"
+            app:layout_constraintTop_toBottomOf="@+id/tvUnitName"/>
 
         <!-- 生日 -->
         <TextView
@@ -108,13 +135,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@{`生日：`+m.birthday}"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textColor="@color/primaryText"
             app:layout_constraintStart_toStartOf="@+id/ivAvatar"
             app:layout_constraintTop_toBottomOf="@+id/tvUnitName"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="8dp"
+            android:padding="8dp"
             tools:text="生日"  />
+
+        <!-- 分割线 4 -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            app:layout_constraintStart_toStartOf="@+id/tvBirthday"
+            app:layout_constraintEnd_toEndOf="@+id/tvBirthday"
+            app:layout_constraintTop_toBottomOf="@+id/tvBirthday"/>
 
         <!-- 身份 -->
         <TextView
@@ -122,13 +158,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@{`身份：`+m.idTypeName}"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textColor="@color/primaryText"
             app:layout_constraintStart_toStartOf="@+id/ivAvatar"
             app:layout_constraintTop_toBottomOf="@+id/tvBirthday"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="8dp"
+            android:padding="8dp"
             tools:text="身份" />
+
+        <!-- 分割线 5 -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            app:layout_constraintStart_toStartOf="@+id/tvIdType"
+            app:layout_constraintEnd_toEndOf="@+id/tvIdType"
+            app:layout_constraintTop_toBottomOf="@+id/tvIdType"/>
 
         <!-- 手机号 -->
         <TextView
@@ -136,13 +181,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@{`手机号：`+m.mobile}"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textColor="@color/primaryText"
             app:layout_constraintStart_toStartOf="@+id/ivAvatar"
             app:layout_constraintTop_toBottomOf="@+id/tvIdType"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="8dp"
+            android:padding="8dp"
             tools:text="手机号" />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            app:layout_constraintStart_toStartOf="@+id/tvMobile"
+            app:layout_constraintEnd_toEndOf="@+id/tvMobile"
+            app:layout_constraintTop_toBottomOf="@+id/tvMobile"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.google.android.material.card.MaterialCardView>
 </layout>
