@@ -15,6 +15,8 @@ object Constants {
     const val WEIXIN_JWXT_URL = "https://$JWXT_ECJTU_DOMAIN/weixin/CalendarServlet"
     const val GET_ELERTIVE_COURSE_URL_TEMPLATE = "https://$JWXT_ECJTU_DOMAIN/infoQuery/XKStu_findTerm.action"  // 获取选修课程信息(get)
     const val GET_STU_PROFILE_URL = "http://portal.$ECJTU_DOMAIN/dcp/profile/profile.action" // 获取个人信息
+    const val DCP_URL = "http://portal.$ECJTU_DOMAIN/dcp/"
     const val GET_STU_INFO_URL= "http://portal.$ECJTU_DOMAIN/dcp/forward.action?path=/portal/portal&p=info" // 个人信息主页
     const val STU_AVATAR_L_URL= "http://portal.$ECJTU_DOMAIN/dcp/uploadfiles/avatar/large/"
+    const val DCP_SSO_URL = "http://portal.$ECJTU_DOMAIN/dcp/sso/sso.action"
 }

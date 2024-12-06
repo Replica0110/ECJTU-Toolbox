@@ -1,21 +1,19 @@
 package com.lonx.ecjtutoolbox.api
 
-import android.content.Context
-import android.content.pm.PackageManager
 import com.franmontiel.persistentcookiejar.PersistentCookieJar
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.lonx.ecjtutoolbox.utils.Constants.CAS_ECJTU_DOMAIN
+import com.lonx.ecjtutoolbox.utils.Constants.DCP_URL
 import com.lonx.ecjtutoolbox.utils.Constants.ECJTU2JWXT_URL
 import com.lonx.ecjtutoolbox.utils.Constants.ECJTU_LOGIN_URL
-import com.lonx.ecjtutoolbox.utils.Constants.GET_STU_INFO_URL
 import com.lonx.ecjtutoolbox.utils.Constants.GET_STU_PROFILE_URL
 import com.lonx.ecjtutoolbox.utils.Constants.JWXT_LOGIN_URL
 import com.lonx.ecjtutoolbox.utils.Constants.PORTAL_ECJTU_DOMAIN
+import com.lonx.ecjtutoolbox.utils.Constants.DCP_SSO_URL
 import com.lonx.ecjtutoolbox.utils.Constants.PWD_ENC_URL
 import com.lonx.ecjtutoolbox.utils.Constants.STU_AVATAR_L_URL
 import com.lonx.ecjtutoolbox.utils.Constants.USER_AGENT
-import com.lonx.ecjtutoolbox.utils.PreferencesManager
 import com.lonx.ecjtutoolbox.utils.StuProfileInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -57,7 +55,7 @@ class JWXTApi(
             JWXT_LOGIN_URL, // 登录后需要检查的域名
         )
 
-        // 获取存储的 cookies（可能包含多个域名的 cookies）
+        // 获取存储的 cookies
         val allCookies = mutableListOf<Cookie>()
         // 获取 cookies
         urlsToCheck.forEach { url ->
@@ -65,11 +63,9 @@ class JWXTApi(
             val cookiesForDomain = cookieJar.loadForRequest(httpUrl)
             allCookies.addAll(cookiesForDomain)
         }
-        e { "All cookies: $allCookies" }
         return when (type) {
             0 -> {
                 // 仅检查 CASTGC cookie
-
                 e { "CASTGC cookie found: ${allCookies.any { it.name == "CASTGC" && it.value.isNotEmpty() }}" }
                 allCookies.any { it.name == "CASTGC" && it.value.isNotEmpty() }
             }
@@ -77,7 +73,6 @@ class JWXTApi(
                 // 检查是否有完整的 cookie 集合
                 val requiredCookies = listOf("CASTGC", "JSESSIONID")
                 requiredCookies.all { cookieName ->
-                    e { "Checking cookie: $cookieName" }
                     allCookies.any { it.name == cookieName && it.value.isNotEmpty() }
                 }
             }
@@ -85,13 +80,8 @@ class JWXTApi(
         }
     }
 
-
-
-    private suspend fun profile(): StuProfileInfo {
-        val response = get(GET_STU_INFO_URL)
-        val document = response.body?.string()?.let { Jsoup.parse(it) }
-        val sessValue = document?.select("#sess")?.attr("value") ?: ""
-        println("sess value: $sessValue")
+    suspend fun getProfile(): StuProfileInfo {
+        get(DCP_URL) // 获取 key_dcp_v6 cookie
 
         val requestBody = """
         {
@@ -101,8 +91,7 @@ class JWXTApi(
           },
           "javaClass": "java.util.HashMap"
         }
-        """.trimIndent()
-            .toRequestBody("application/json; charset=utf-8".toMediaType())
+        """.trimIndent().toRequestBody("application/json; charset=utf-8".toMediaType())
         val avatarBody = """
         {
           "map": {
@@ -114,13 +103,11 @@ class JWXTApi(
         """.trimIndent()
             .toRequestBody("application/json; charset=utf-8".toMediaType())
         val profileResponse = post(GET_STU_PROFILE_URL) { requestBuilder ->
-            requestBuilder.header("Cookie", "key_dcp_v6=$sessValue")
             requestBuilder.header("render", "json")
             requestBuilder.header("clientType", "json")
             requestBuilder.post(requestBody)
         }
         val avatarResponse = post(GET_STU_PROFILE_URL) { requestBuilder ->
-            requestBuilder.header("Cookie", "key_dcp_v6=$sessValue")
             requestBuilder.header("render", "json")
             requestBuilder.header("clientType", "json")
             requestBuilder.post(avatarBody)
@@ -157,19 +144,26 @@ class JWXTApi(
                     avatar = avatarUrl
                 )
             }.first()
-
-
         return stuProfile
     }
-    suspend fun getProfile(): StuProfileInfo {
-        return try {
-            profile()
-        } catch (e: Exception) {
-            e { "获取个人资料失败: ${e.message}" }
-            StuProfileInfo.fromData(emptyList())
+    suspend fun getYktNum(): String { // 获取一卡通余额，与 getProfile() 方法的区别只在于请求体中的method不一致，可通过修改此参数获取其他信息
+        get(DCP_URL) // 确保有key_dcp_v6
+        val requestBody = """
+            {
+              "map": {
+                "method": "getYktNum", 
+                "params": null
+              },
+              "javaClass": "java.util.HashMap"
+            }
+        """.trimIndent().toRequestBody("application/json; charset=utf-8".toMediaType())
+        val response = post(DCP_SSO_URL) { requestBuilder ->
+            requestBuilder.header("render", "json")
+            requestBuilder.header("clientType", "json")
+            requestBuilder.post(requestBody)
         }
+        return response.body?.string()?:"0.00"
     }
-
     private suspend fun getEncryptedPassword(oriPWD: String): String = withContext(Dispatchers.IO) {
         val formBody = FormBody.Builder()
             .add("pwd", oriPWD)

@@ -3,12 +3,12 @@ package com.lonx.ecjtutoolbox
 import android.app.Application
 import com.franmontiel.persistentcookiejar.PersistentCookieJar
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache
-import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor
 
 import com.lonx.ecjtutoolbox.api.JWXTApi
 import com.lonx.ecjtutoolbox.ui.account.AccountViewModel
 import com.lonx.ecjtutoolbox.utils.MyOkHttpClient
 import com.lonx.ecjtutoolbox.utils.PreferencesManager
+import com.lonx.ecjtutoolbox.utils.SharedPrefsCookiePersistor
 import okhttp3.CookieJar
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
