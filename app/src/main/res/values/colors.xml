@@ -14,5 +14,5 @@
     <color name="gray">#717171</color>
     <color name="md_theme_light_primary">#ff3271F1</color>
     <color name="primaryText">@color/black</color>
-    <color name="secondaryText">@color/black_lite</color>
+    <color name="secondaryText">@color/gray</color>
 </resources>
