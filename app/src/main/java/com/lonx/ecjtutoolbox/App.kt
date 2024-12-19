@@ -61,12 +61,12 @@ class App: Application() {
 
             // 提供 WifiStatusMonitor
 
-            single { WifiStatusMonitor(get(), get()) }
+            single { WifiStatusMonitor(get(), get(),applicationContext) }
 
 
             // 提供 ViewModel
             viewModel { WifiViewModel(get(),get()) }
-            viewModel { AccountViewModel(get()) }
+            viewModel { AccountViewModel(get(),get()) }
         }
 
         // 启动Koin

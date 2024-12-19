@@ -2,267 +2,309 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
     <data>
-        <import type="com.lonx.ecjtutoolbox.utils.StuProfileInfo"/>
-        <variable name="m" type="StuProfileInfo" />
+        <variable
+            name="info"
+            type="com.lonx.ecjtutoolbox.utils.StuProfileInfo" />
+        <variable
+            name="viewModel"
+            type="com.lonx.ecjtutoolbox.ui.account.AccountViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".ui.account.AccountFragment"
-        android:layout_marginTop="8dp"
-        android:padding="20dp">
+        android:padding="16dp"
+        tools:context=".ui.account.AccountFragment">
 
-        <!-- 头像 -->
-        <ImageView
-            android:id="@+id/ivAvatar"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:src="@drawable/ic_avatar_placeholder"
-            android:contentDescription="头像"
-            android:layout_marginEnd="16dp"
-            android:layout_marginTop="16dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:cardCornerRadius="4dp"
+            android:elevation="2dp"
+            app:cardUseCompatPadding="true">
 
-        <!-- 用户名 -->
-        <TextView
-            android:id="@+id/tvName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{m.userName}"
-            android:textSize="20sp"
-            android:textColor="@color/primaryText"
-            android:layout_marginStart="16dp"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintStart_toEndOf="@+id/ivAvatar"
-            app:layout_constraintBottom_toBottomOf="@+id/ivAvatar"
-            tools:text="用户名" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp">
 
-        <!-- 性别 -->
-        <TextView
-            android:id="@+id/tvSex"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{m.SexName}"
-            android:textSize="15sp"
-            android:layout_marginStart="8dp"
-            android:textColor="@color/secondaryText"
-            app:layout_constraintStart_toEndOf="@+id/tvName"
-            app:layout_constraintBottom_toBottomOf="@+id/tvName"
-            tools:text="性别"  />
-        <View
-            android:id="@+id/line1"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_marginTop="20dp"
-            android:background="@android:color/darker_gray"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ivAvatar"/>
-        <!-- 学号 -->
-        <TextView
-            android:id="@+id/lbIdNumber"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="学号"
-            android:textSize="16sp"
-            android:textColor="@color/primaryText"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/line1"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            tools:text="学号" />
-        <TextView
-            android:id="@+id/tvIdNumber"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{m.idNumber}"
-            android:textSize="16sp"
-            android:textColor="@color/secondaryText"
-            app:layout_constraintTop_toBottomOf="@+id/line1"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            tools:text="学号" />
-        <!-- 分割线 1 -->
-        <View
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvIdNumber"/>
+                <!-- 头像 -->
+                <ImageView
+                    android:id="@+id/ivAvatar"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:src="@drawable/ic_avatar_placeholder"
+                    android:contentDescription="头像"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- 用户ID -->
-        <TextView
-            android:id="@+id/lbUserId"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="用户ID"
-            android:textSize="16sp"
-            android:textColor="@color/primaryText"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvIdNumber"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            tools:text="用户ID"  />
-        <TextView
-            android:id="@+id/tvUserId"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{m.userId}"
-            android:textSize="16sp"
-            android:textColor="@color/secondaryText"
-            app:layout_constraintTop_toBottomOf="@+id/tvIdNumber"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            tools:text="用户ID"  />
-        <!-- 分割线 2 -->
-        <View
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvUserId"/>
+                <!-- 用户名 -->
+                <TextView
+                    android:id="@+id/tvName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{info.userName}"
+                    android:textSize="20sp"
+                    android:layout_marginEnd="8sp"
+                    android:textColor="@color/primaryText"
+                    app:layout_constraintEnd_toStartOf="@id/tvSex"
+                    app:layout_constraintTop_toTopOf="@id/ivAvatar"
+                    app:layout_constraintBottom_toBottomOf="@id/ivAvatar"
+                    tools:text="用户名" />
 
-        <!-- 单位 -->
-        <TextView
-            android:id="@+id/lbUnitName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="单位"
-            android:textSize="16sp"
-            android:textColor="@color/primaryText"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvUserId"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            tools:text="单位"  />
-        <TextView
-            android:id="@+id/tvUnitName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{m.unitName}"
-            android:textSize="16sp"
-            android:textColor="@color/secondaryText"
-            app:layout_constraintTop_toBottomOf="@+id/tvUserId"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            tools:text="单位"  />
+                <!-- 性别 -->
+                <TextView
+                    android:id="@+id/tvSex"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{info.SexName}"
+                    android:textSize="15sp"
+                    android:layout_marginStart="4dp"
+                    android:textColor="@color/secondaryText"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@id/ivAvatar"
+                    app:layout_constraintTop_toTopOf="@id/ivAvatar"
+                    tools:text="性别" />
 
-        <!-- 分割线 3 -->
-        <View
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvUnitName"/>
+                <!-- 分割线 -->
+                <View
+                    android:id="@+id/line1"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@android:color/darker_gray"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ivAvatar" />
 
-        <!-- 生日 -->
-        <TextView
-            android:id="@+id/lbBirthday"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="生日"
-            android:textSize="16sp"
-            android:textColor="@color/primaryText"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvUnitName"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            tools:text="生日"  />
-        <TextView
-            android:id="@+id/tvBirthday"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{m.birthday}"
-            android:textSize="16sp"
-            android:textColor="@color/secondaryText"
-            app:layout_constraintTop_toBottomOf="@+id/tvUnitName"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            tools:text="生日"  />
-        <!-- 分割线 4 -->
-        <View
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvBirthday"/>
+                <!-- 学号 -->
+                <TextView
+                    android:id="@+id/lbIdNumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="学号"
+                    android:textSize="16sp"
+                    android:textColor="@color/primaryText"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/line1" />
 
-        <!-- 身份 -->
-        <TextView
-            android:id="@+id/lbIdType"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="身份"
-            android:textSize="16sp"
-            android:textColor="@color/primaryText"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvBirthday"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            tools:text="身份" />
-        <TextView
-            android:id="@+id/tvIdType"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{m.idTypeName}"
-            android:textSize="16sp"
-            android:textColor="@color/secondaryText"
-            app:layout_constraintTop_toBottomOf="@+id/tvBirthday"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            tools:text="身份" />
-        <!-- 分割线 5 -->
-        <View
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvIdType"/>
+                <TextView
+                    android:id="@+id/tvIdNumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{info.idNumber}"
+                    android:textSize="16sp"
+                    android:textColor="@color/secondaryText"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/line1"
+                    tools:text="学号" />
 
-        <!-- 手机号 -->
-        <TextView
-            android:id="@+id/lbMobile"
-            android:layout_width="wrap_content"
+                <!-- 分割线 2 -->
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:background="@android:color/darker_gray"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvIdNumber" />
+
+                <!-- 用户ID -->
+                <TextView
+                    android:id="@+id/lbUserId"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="用户ID"
+                    android:textSize="16sp"
+                    android:textColor="@color/primaryText"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvIdNumber" />
+
+                <TextView
+                    android:id="@+id/tvUserId"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{info.userId}"
+                    android:textSize="16sp"
+                    android:textColor="@color/secondaryText"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvIdNumber"
+                    tools:text="用户ID" />
+
+                <!-- 分割线 3 -->
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:background="@android:color/darker_gray"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvUserId" />
+
+                <!-- 单位 -->
+                <TextView
+                    android:id="@+id/lbUnitName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="单位"
+                    android:textSize="16sp"
+                    android:textColor="@color/primaryText"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvUserId" />
+
+                <TextView
+                    android:id="@+id/tvUnitName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{info.unitName}"
+                    android:textSize="16sp"
+                    android:textColor="@color/secondaryText"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvUserId"
+                    tools:text="单位" />
+
+                <!-- 分割线 4 -->
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:background="@android:color/darker_gray"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvUnitName" />
+
+                <!-- 生日 -->
+
+                <TextView
+                    android:id="@+id/lbBirthday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:text="生日"
+                    android:textColor="@color/primaryText"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvUnitName" />
+
+                <TextView
+                    android:id="@+id/tvBirthday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{info.birthday}"
+                    android:textSize="16sp"
+                    android:textColor="@color/secondaryText"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvUnitName"
+                    tools:text="生日" />
+
+                <!-- 分割线 5 -->
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:background="@android:color/darker_gray"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvBirthday" />
+                <!-- 分割线 6 -->
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:background="@android:color/darker_gray"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvIdType" />
+                <!-- 身份 -->
+
+                <TextView
+                    android:id="@+id/lbIdType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:text="身份"
+                    android:textColor="@color/primaryText"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvBirthday" />
+
+                <TextView
+                    android:id="@+id/tvIdType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{info.idTypeName}"
+                    android:textSize="16sp"
+                    android:textColor="@color/secondaryText"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvBirthday"
+                    tools:text="身份" />
+                <!-- 手机号 -->
+                <TextView
+                    android:id="@+id/lbMobile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="手机号"
+                    android:textSize="16sp"
+                    android:textColor="@color/primaryText"
+                    android:paddingTop="8dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvIdType" />
+
+                <TextView
+                    android:id="@+id/tvMobile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{info.mobile}"
+                    android:textSize="16sp"
+                    android:textColor="@color/secondaryText"
+                    android:paddingTop="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvIdType"
+                    tools:text="手机号" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+        <com.google.android.material.card.MaterialCardView
+            app:layout_constraintTop_toBottomOf="@id/cardInfo"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="手机号"
-            android:textSize="16sp"
-            android:textColor="@color/primaryText"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvIdType"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            tools:text="手机号" />
-        <TextView
-            android:id="@+id/tvMobile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{m.mobile}"
-            android:textSize="16sp"
-            android:textColor="@color/secondaryText"
-            app:layout_constraintTop_toBottomOf="@+id/tvIdType"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            tools:text="手机号" />
-        <View
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvMobile"/>
+            app:cardCornerRadius="4dp"
+            android:elevation="2dp"
+            app:cardUseCompatPadding="true">
+                <!-- 账号配置按钮 -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/accountButton"
+                    android:layout_gravity="center"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    app:backgroundTint="@color/white"
+                    app:rippleColor="@color/primary"
+                    app:iconTint="@color/black"
+                    app:icon="@drawable/ic_wifi_account"
+                    app:elevation="0dp"
+                    android:textColor="@color/black"
+                    android:enabled="@{!viewModel.dialogShowed}"
+                    android:onClick="@{(view) -> viewModel.accountConfig(view)}"
+                    android:text="@string/account_config" />
+        </com.google.android.material.card.MaterialCardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

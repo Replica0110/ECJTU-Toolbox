@@ -1,7 +1,9 @@
 package com.lonx.ecjtutoolbox.utils
 
-enum class WifiStatus {
-    Connected,
-    Disconnected,
-    Disabled
+sealed class WifiStatus {
+    data object Connected : WifiStatus()
+    data object Disconnected : WifiStatus()
+    data object Disabled : WifiStatus()
+    data object Unknown : WifiStatus()
+    data object Enabled : WifiStatus()
 }

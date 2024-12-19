@@ -45,6 +45,9 @@ class WifiApi {
 
         d {"开始创建OkHttpClient对象"}
         val client = OkHttpClient.Builder()
+            .connectTimeout(2, TimeUnit.SECONDS)
+            .readTimeout(2, TimeUnit.SECONDS)
+            .writeTimeout(2, TimeUnit.SECONDS)
             .followRedirects(false)
             .build()
 
@@ -93,6 +96,9 @@ class WifiApi {
     }
     fun loginOut(): String {
         val client = OkHttpClient.Builder()
+            .connectTimeout(2, TimeUnit.SECONDS)
+            .readTimeout(2, TimeUnit.SECONDS)
+            .writeTimeout(2, TimeUnit.SECONDS)
             .followRedirects(false)
             .build()
         val mediaType = "application/x-www-form-urlencoded".toMediaType()

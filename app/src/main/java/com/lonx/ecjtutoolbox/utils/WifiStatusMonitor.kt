@@ -1,7 +1,10 @@
 package com.lonx.ecjtutoolbox.utils
 
 import android.Manifest
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.net.LinkProperties
@@ -10,101 +13,163 @@ import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.net.wifi.SupplicantState
 import android.net.wifi.WifiManager
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat.registerReceiver
 import com.lonx.ecjtutoolbox.extension.isWifiConnected
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.conflate
+import kotlinx.coroutines.flow.distinctUntilChanged
+import slimber.log.e
+
 
 class WifiStatusMonitor(
     private val wifiManager: WifiManager,
-    private val connectivityManager: ConnectivityManager
+    private val connectivityManager: ConnectivityManager,
+    private val context: Context
 ) {
-    private val networkRequest = NetworkRequest
-        .Builder()
+    // 创建网络请求对象，指定只关注 Wi-Fi 连接
+    private val networkRequest = NetworkRequest.Builder()
         .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
         .build()
+
+    /**
+     * 根据 Wi-Fi 和连接状态判断当前的 Wi-Fi 状态。
+     */
     private fun getWifiStatus(wifiManager: WifiManager, connectivityManager: ConnectivityManager): WifiStatus =
         when {
-            !wifiManager.isWifiEnabled -> WifiStatus.Disabled
-            connectivityManager.isWifiConnected == true -> WifiStatus.Connected
-            else -> WifiStatus.Disconnected
-        }
-    fun getCurrentWifiSSID(context: Context): String? {
-        // 检查位置权限
-        if (ActivityCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // 如果权限未授予，返回 null
-            return "未授予位置权限，无法获取网络名称"
+            !wifiManager.isWifiEnabled -> WifiStatus.Disabled // 如果 Wi-Fi 被禁用，返回禁用状态
+            connectivityManager.activeNetwork != null && connectivityManager.isWifiConnected == true -> WifiStatus.Connected // 如果 Wi-Fi 已连接，返回连接状态
+            else -> WifiStatus.Disconnected // 否则返回断开状态
         }
 
-        // 获取连接的 Wi-Fi 网络信息
+    /**
+     * 获取当前连接的 Wi-Fi 网络的 SSID（如果可用）。
+     * 需要位置权限。
+     */
+    fun getSSID(context: Context): String? {
+        // 检查是否具有位置权限
+        if (!hasLocationPermission(context)) {
+            throw SecurityException("Location permission not granted") // 没有权限时抛出异常
+        }
+
         val wifiInfo = wifiManager.connectionInfo
+        // 如果 Wi-Fi 已连接，返回 SSID，移除双引号
         return if (wifiInfo.supplicantState == SupplicantState.COMPLETED) {
-            wifiInfo.ssid?.replace("\"", "") // 去除双引号
+            wifiInfo.ssid?.replace("\"", "") // 移除双引号
         } else {
-            null
+            null // 如果未连接，则返回 null
         }
     }
-    fun WifiManager.getNoConnectionPresentStatus(): WifiStatus =
-        if (isWifiEnabled) WifiStatus.Disconnected else WifiStatus.Disabled
 
+    /**
+     * 检查应用是否有访问 Wi-Fi SSID 所需的位置权限。
+     */
+    private fun hasLocationPermission(context: Context): Boolean {
+        return ActivityCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    /**
+     * 生成一个流（Flow），实时发出当前 Wi-Fi 状态并在状态变化时更新。
+     */
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     val wifiStatus: Flow<WifiStatus> = callbackFlow {
-        channel.trySend(
-            getWifiStatus(
-                wifiManager,
-                connectivityManager
-            )
-                .log { "Sent $it as initial" }
-        )
+        // 发送初始 Wi-Fi 状态
+        val initialStatus = getWifiStatus(wifiManager, connectivityManager)
+        channel.trySend(initialStatus)
+        log("Initial status sent: $initialStatus")
 
+        // 定义网络回调
         val callback = object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
-                channel.trySend(WifiStatus.Connected.log { "Sent $it onAvailable" })
+                val status = WifiStatus.Connected
+                channel.trySend(status)
+                log("Status sent onAvailable: $status") // 网络可用时，发送连接状态
             }
 
             override fun onCapabilitiesChanged(network: Network, networkCapabilities: NetworkCapabilities) {
                 if (network == connectivityManager.activeNetwork) {
-                    channel.trySend(WifiStatus.Connected.log { "Sent $it onCapabilitiesChanged" })
+                    val status = WifiStatus.Connected
+                    channel.trySend(status)
+                    log("Network changed: $status") // 网络能力变化时，发送连接状态
                 }
             }
 
             override fun onLinkPropertiesChanged(network: Network, linkProperties: LinkProperties) {
                 if (network == connectivityManager.activeNetwork) {
-                    channel.trySend(WifiStatus.Connected.log { "Sent $it onLinkPropertiesChanged" })
+                    val status = WifiStatus.Connected
+                    channel.trySend(status)
+                    log("Network changed: $status") // 网络链接属性变化时，发送连接状态
                 }
             }
 
             override fun onUnavailable() {
-                channel.trySend(
-                    wifiManager.getNoConnectionPresentStatus()
-                        .log { "Sent $it onUnavailable" }
-                )
+                val status = WifiStatus.Disconnected
+                channel.trySend(status)
+                log("Status sent onUnavailable: $status") // 网络不可用时，发送断开状态
             }
 
             override fun onLost(network: Network) {
-                channel.trySend(
-                    wifiManager.getNoConnectionPresentStatus()
-                        .log { "Sent $it onLost" }
-                )
+                val status = wifiManager.getNoConnectionPresentStatus()
+                channel.trySend(status)
+                log("Status sent onLost: $status") // 网络丢失时，发送断开状态
             }
         }
 
-        connectivityManager.registerNetworkCallback(
-            networkRequest,
-            callback
-        )
+        // 注册网络回调
+        connectivityManager.registerNetworkCallback(networkRequest, callback)
 
-        awaitClose {
-            connectivityManager.unregisterNetworkCallback(callback)
+
+        // 定义广播接收器监听 Wi-Fi 开关状态
+        val wifiStateReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                when (intent?.action) {
+                    WifiManager.WIFI_STATE_CHANGED_ACTION -> {
+                        val wifiState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_UNKNOWN)
+                        val status = when (wifiState) {
+                            WifiManager.WIFI_STATE_ENABLED -> WifiStatus.Enabled
+                            WifiManager.WIFI_STATE_DISABLED -> WifiStatus.Disabled
+                            else -> WifiStatus.Unknown
+                        }
+                        channel.trySend(status)
+                        log("Wi-Fi state changed: $status")
+                    }
+                }
+            }
         }
-    }.conflate()
+        val wifiStateIntentFilter = IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION)
+        context.registerReceiver(wifiStateReceiver, wifiStateIntentFilter,
+            Context.RECEIVER_NOT_EXPORTED)
+
+        // 当流收集器关闭时，清理资源
+        awaitClose {
+            connectivityManager.unregisterNetworkCallback(callback) // 取消注册网络回调
+            context.unregisterReceiver(wifiStateReceiver)
+        }
+    }
+        .distinctUntilChanged()
+        .conflate()
+
+    /**
+     * 扩展函数，用于判断当没有连接时 Wi-Fi 的状态。
+     */
+    private fun WifiManager.getNoConnectionPresentStatus(): WifiStatus =
+        if (isWifiEnabled) WifiStatus.Disconnected else WifiStatus.Disabled
+
+    /**
+     * 用于调试的日志辅助函数。
+     */
+    private fun log(message: String) {
+        e { message }
+    }
 }

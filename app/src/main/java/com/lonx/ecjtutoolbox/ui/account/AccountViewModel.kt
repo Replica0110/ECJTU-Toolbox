@@ -1,21 +1,35 @@
 package com.lonx.ecjtutoolbox.ui.account
 
 import android.util.Log
+import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.EditText
+import android.widget.Spinner
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.lonx.ecjtutoolbox.R
 import com.lonx.ecjtutoolbox.api.JWXTApi
+import com.lonx.ecjtutoolbox.utils.PreferencesManager
 import com.lonx.ecjtutoolbox.utils.StuProfileInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.java.KoinJavaComponent.inject
 import timber.log.Timber
 
-class AccountViewModel(private val jwxtApi: JWXTApi) : ViewModel() {
+class AccountViewModel(
+    private val jwxtApi: JWXTApi,
+    private val preferencesManager: PreferencesManager
+) : ViewModel() {
+    private val ispOptions = arrayOf("中国电信", "中国移动", "中国联通")
     private val _userProfile = MutableLiveData<StuProfileInfo>()
     val userProfile: LiveData<StuProfileInfo> get() = _userProfile
-
+    val dialogShowed = MutableLiveData(false)
     // 加载用户数据
     fun loadUserProfile() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -27,6 +41,45 @@ class AccountViewModel(private val jwxtApi: JWXTApi) : ViewModel() {
                 Timber.tag("AccountViewModel").e(e, "Failed to load user profile")
             }
         }
+    }
+    fun accountConfig(view1: View) {
+        val context = view1.context
+        val builder = MaterialAlertDialogBuilder(context)
+        val view = View.inflate(context, R.layout.dialog_add_account, null)
+
+        val etStuId = view.findViewById<EditText>(R.id.account_stuid)
+        val etStuPassword = view.findViewById<EditText>(R.id.account_passwrod)
+        val spIsp = view.findViewById<Spinner>(R.id.account_isp)
+        etStuId.setText(preferencesManager.getString("student_id", ""))
+        etStuPassword.setText(preferencesManager.getString("student_pwd", ""))
+        spIsp.adapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, ispOptions).apply{
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        }
+        spIsp.setSelection(preferencesManager.getInt("isp", 1) - 1)
+        builder.setView(view)
+            .setPositiveButton("保存并登录") { _, _ ->
+                preferencesManager.putString("student_id", etStuId.text.toString())
+                preferencesManager.putString("student_pwd", etStuPassword.text.toString())
+                preferencesManager.putInt("isp", spIsp.selectedItemPosition + 1)
+                try {
+                    viewModelScope.launch(Dispatchers.IO) {
+                        jwxtApi.updateInfo(etStuId.text.toString(),etStuPassword.text.toString()) // 更新账号信息
+                        val state = jwxtApi.login(true)
+                        val profile = jwxtApi.getProfile()
+                        _userProfile.postValue(profile) // 更新数据
+                        withContext(Dispatchers.Main) { Toast.makeText(context, state, Toast.LENGTH_LONG).show()}
+                    }
+
+                } catch (e: Exception){
+                    e.printStackTrace()
+                    Toast.makeText(context, "出现错误：${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("取消") { dialog, _ ->
+                dialog.dismiss()
+            }
+
+        builder.create().show()
     }
 }
 

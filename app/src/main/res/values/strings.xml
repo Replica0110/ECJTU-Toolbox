@@ -25,6 +25,8 @@
     <string name="wifi_disabled">Wi-Fi未启用</string>
     <string name="ssid_not_connected">未连接网络</string>
     <string name="login">登录</string>
+    <string name="logging_in">登录中…</string>
     <string name="logout">注销</string>
+    <string name="logging_out">注销中…</string>
     <string name="account_config">账号配置</string>
 </resources>
