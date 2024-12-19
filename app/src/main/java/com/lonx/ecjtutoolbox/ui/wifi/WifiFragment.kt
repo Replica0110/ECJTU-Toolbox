@@ -5,11 +5,13 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.lonx.ecjtutoolbox.databinding.FragmentWifiBinding
@@ -40,7 +42,7 @@ class WifiFragment : Fragment() {
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 // 权限已授予，更新 SSID
-                wifiViewModel.updateCurrentSSID(requireContext())
+                wifiViewModel.updateSSID(requireContext())
             } else {
                 // 权限被拒绝
                 wifiViewModel.ssid1.set("未授予位置权限")
@@ -52,7 +54,7 @@ class WifiFragment : Fragment() {
         return locationManager?.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER) ?: false ||
                 locationManager?.isProviderEnabled(android.location.LocationManager.NETWORK_PROVIDER) ?: false
     }
-    fun checkAndRequestPermissions() {
+    private fun checkAndRequestPermissions() {
         val context = requireContext() // 检查是否已开启位置信息
         if (!isLocationEnabled(context)) {
             AlertDialog.Builder(context).apply {
@@ -94,6 +96,7 @@ class WifiFragment : Fragment() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         view.post {

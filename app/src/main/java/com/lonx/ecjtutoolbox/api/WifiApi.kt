@@ -148,7 +148,7 @@ class WifiApi {
                     3
                 }
             } else {
-                e{"奇怪的http状态码：${response.code}\n${response.headers}\n${response.body?.string()}"}
+                e{"奇怪的http状态码：${response.code}"}
                 2
             }
         } catch (e: IOException) {

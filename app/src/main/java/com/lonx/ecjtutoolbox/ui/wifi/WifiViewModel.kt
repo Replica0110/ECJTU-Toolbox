@@ -5,11 +5,13 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.provider.Settings
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Spinner
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.databinding.ObservableField
@@ -48,14 +50,16 @@ class WifiViewModel(
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(intent)
     }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     fun observeWifiStatus(context: Context) {
         viewModelScope.launch {
             wifiStatusMonitor.wifiStatus.collectLatest { status ->
-                e { "WiFi状态：$status" }
-                updateUi(status,context)
+                updateUi(status, context)
             }
         }
     }
+
     fun checkAndRequestPermissions(view: View) {
         val context = view.context    // 检查是否已开启位置信息
         if (!isLocationEnabled(context)) {
@@ -72,9 +76,17 @@ class WifiViewModel(
             return
         }
         // 检查是否已经授予位置权限
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
             // 如果用户之前拒绝了权限请求，显示说明对话框
-            if (ActivityCompat.shouldShowRequestPermissionRationale(context as android.app.Activity, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    context as android.app.Activity,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                )
+            ) {
                 AlertDialog.Builder(context).apply {
                     setTitle("需要位置权限")
                     setMessage("应用需要位置权限以获取WiFi信息，请在权限设置中启用此权限。")
@@ -89,7 +101,11 @@ class WifiViewModel(
                 }
             } else {
                 // 未请求过权限，或用户选择了"不再提示"，直接请求权限
-                requestPermissions(context, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
+                requestPermissions(
+                    context,
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                    LOCATION_PERMISSION_REQUEST_CODE
+                )
             }
         } else {
             // 已经拥有权限，提示权限已授予
@@ -98,10 +114,12 @@ class WifiViewModel(
     }
 
     private fun isLocationEnabled(context: Context): Boolean {
-        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as? android.location.LocationManager
+        val locationManager =
+            context.getSystemService(Context.LOCATION_SERVICE) as? android.location.LocationManager
         return locationManager?.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER) ?: false ||
                 locationManager?.isProviderEnabled(android.location.LocationManager.NETWORK_PROVIDER) ?: false
     }
+
     fun accountConfig(view1: View) {
         dialogShowed.value = true
         val context = view1.context
@@ -109,15 +127,16 @@ class WifiViewModel(
         val stuIdEditText = view.findViewById<EditText>(R.id.account_stuid)
         val stuPwdEditText = view.findViewById<EditText>(R.id.account_passwrod)
         val ispSpinner = view.findViewById<Spinner>(R.id.account_isp)
-        ispSpinner.adapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, ispOptions).apply {
-            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        }
+        ispSpinner.adapter =
+            ArrayAdapter(context, android.R.layout.simple_spinner_item, ispOptions).apply {
+                setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            }
         val studentId = preferencesManager.getString("student_id", "")
         val studentPwd = preferencesManager.getString("student_pwd", "")
         val isp = preferencesManager.getInt("isp", 1)
         stuIdEditText.setText(studentId)
         stuPwdEditText.setText(studentPwd)
-        ispSpinner.setSelection(isp-1)
+        ispSpinner.setSelection(isp - 1)
         MaterialAlertDialogBuilder(context)
             .setView(view)
             .setTitle("账号配置")
@@ -130,7 +149,8 @@ class WifiViewModel(
             .show()
         dialogShowed.value = false
     }
-    fun updateCurrentSSID(context: Context) {
+
+    fun updateSSID(context: Context) {
         val ssid = wifiStatusMonitor.getSSID(context)
         ssid1.set(ssid ?: "未知网络")
     }
@@ -143,6 +163,8 @@ class WifiViewModel(
             show()
         }
     }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     fun loginIn(view: View) {
         d { "Login in" }
         val stuId = preferencesManager.getString("student_id", "")
@@ -159,7 +181,7 @@ class WifiViewModel(
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                var title = ""
+                val title: String
                 var result = wifiApi.login(stuId, stuPwd, isp)
                 if (result.startsWith("E")) {
                     title = "登录失败"
@@ -168,6 +190,9 @@ class WifiViewModel(
                     title = "登录成功"
                 }
                 withContext(Dispatchers.Main) {
+                    if (title=="登录成功") {
+
+                    }
                     infoDialog(view.context, title, result)
                 }
             } catch (e: Exception) {
@@ -176,71 +201,118 @@ class WifiViewModel(
                     infoDialog(view.context, "登录失败", "登录失败，请重试: ${e.message}")
                 }
             } finally {
-                withContext(Dispatchers.Main){
+                val text: String
+                val netStatus = wifiApi.getState()
+                withContext(Dispatchers.Main) {
+                    text = when (netStatus) {
+                        1 -> "无WLAN连接"
+                        2 -> "非校园网"
+                        3 -> "已连接WLAN，但未登录"
+                        4 -> "已连接WLAN"
+                        else -> "未知状态"
+                    }
+                    wifiStatusText.set(text)
+                    isLoggingOut.value = false
+                    // 更新Wi-Fi状态和SSID
+                    updateSSID(view.context)
+                    observeWifiStatus(view.context)
                     isLoggingIn.value = false
                 }
             }
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     fun loginOut(view: View) {
-        d { "Login out" }
-        isLoggingOut.value = true
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                var title = ""
-                var result = wifiApi.loginOut()
-                if (result.startsWith("E")) {
-                    title="注销失败"
-                    result = result.substring(3)
-                } else {
-                    title = "注销成功"
-                }
-                withContext(Dispatchers.Main){
-                    infoDialog(view.context,title,result)
-                }
-            } catch (e: Exception){
-                e.printStackTrace()
-                withContext(Dispatchers.Main){
-                    infoDialog(view.context,"注销失败","注销失败，请重试: ${e.message}")
-                }
-            } finally {
-                withContext(Dispatchers.Main){
-                    isLoggingOut.value = false
-                }
-            }
+            d { "Login out" }
+            isLoggingOut.value = true
+            viewModelScope.launch(Dispatchers.IO) {
+                try {
+                    var title = ""
+                    var result = wifiApi.loginOut()
+                    if (result.startsWith("E")) {
+                        title = "注销失败"
+                        result = result.substring(3)
+                    } else {
+                        title = "注销成功"
+                    }
+                    withContext(Dispatchers.Main) {
+                        infoDialog(view.context, title, result)
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    withContext(Dispatchers.Main) {
+                        infoDialog(view.context, "注销失败", "注销失败，请重试: ${e.message}")
+                    }
+                } finally {
+                    val text: String
+                    val netStatus = wifiApi.getState()
+                    withContext(Dispatchers.Main) {
+                        text = when (netStatus) {
+                            1 -> "无WLAN连接"
+                            2 -> "非校园网"
+                            3 -> "已连接WLAN，但未登录"
+                            4 -> "已连接WLAN"
+                            else -> "未知状态"
+                        }
+                        wifiStatusText.set(text)
+                        isLoggingOut.value = false
+                        // 更新Wi-Fi状态和SSID
+                        updateSSID(view.context)
+                        observeWifiStatus(view.context)
+                        isLoggingOut.value = false
+                    }
 
-        }
-    }
-    private fun updateUi(status: WifiStatus,context: Context) {
-        when (status) {
-            WifiStatus.Disabled -> {
-                wifiStatusIcon.set(R.drawable.ic_wifi_disabled)
-                wifiStatusText.set("WLAN 未启用")
-                ssid1.set("当前无连接")
-            }
-            WifiStatus.Disconnected -> {
-                wifiStatusIcon.set(R.drawable.ic_wifi_disconnected)
-                wifiStatusText.set("未连接 WiFi")
-                ssid1.set("当前无连接")
-            }
-            WifiStatus.Connected -> {
-                wifiStatusIcon.set(R.drawable.ic_wifi_connected)
-                wifiStatusText.set("已连接 WiFi")
-                val ssid = wifiStatusMonitor.getSSID(context)
-                ssid1.set(ssid ?: "获取网络SSID失败")
-            }
-
-            WifiStatus.Enabled -> {
-                wifiStatusIcon.set(R.drawable.ic_wifi_disconnected)
-                wifiStatusText.set("未连接 WiFi")
-                ssid1.set("当前无连接")
-            }
-            WifiStatus.Unknown -> {
-                wifiStatusIcon.set(R.drawable.ic_wifi_disabled)
-                wifiStatusText.set("未知状态")
-                ssid1.set("当前无连接")
+                }
             }
         }
-    }
+
+    private fun updateUi(status: WifiStatus, context: Context) {
+            when (status) {
+                WifiStatus.Disabled -> {
+                    wifiStatusIcon.set(R.drawable.ic_wifi_disabled)
+                    wifiStatusText.set("WLAN 未启用")
+                    ssid1.set("当前无连接")
+                }
+
+                WifiStatus.Disconnected -> {
+                    wifiStatusIcon.set(R.drawable.ic_wifi_disconnected)
+                    wifiStatusText.set("未连接 WiFi")
+                    ssid1.set("当前无连接")
+                }
+
+                WifiStatus.Connected -> {
+                    var text: String
+                    viewModelScope.launch(Dispatchers.IO) {
+                        val netStatus = wifiApi.getState()
+                        withContext(Dispatchers.Main) {
+                            text = when (netStatus) {
+                                1 -> "无WLAN连接"
+                                2 -> "非校园网"
+                                3 -> "已连接WLAN，但未登录"
+                                4 -> "已连接WLAN"
+                                else -> "未知状态"
+                            }
+                            wifiStatusText.set(text)
+                        }
+                    }
+                    wifiStatusIcon.set(R.drawable.ic_wifi_connected)
+                    val ssid = wifiStatusMonitor.getSSID(context)
+                    ssid1.set(ssid ?: "获取网络SSID失败")
+                }
+
+                WifiStatus.Enabled -> {
+                    wifiStatusIcon.set(R.drawable.ic_wifi_disconnected)
+                    wifiStatusText.set("未连接 WiFi")
+                    ssid1.set("当前无连接")
+                }
+
+                WifiStatus.Unknown -> {
+                    wifiStatusIcon.set(R.drawable.ic_wifi_disabled)
+                    wifiStatusText.set("未知状态")
+                    ssid1.set("当前无连接")
+                }
+            }
+        }
+
 }

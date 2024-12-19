@@ -87,21 +87,21 @@ class WifiStatusMonitor(
         // 发送初始 Wi-Fi 状态
         val initialStatus = getWifiStatus(wifiManager, connectivityManager)
         channel.trySend(initialStatus)
-        log("Initial status sent: $initialStatus")
+            .log { "Initial status sent: $initialStatus" }
 
         // 定义网络回调
         val callback = object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
                 val status = WifiStatus.Connected
                 channel.trySend(status)
-                log("Status sent onAvailable: $status") // 网络可用时，发送连接状态
+                    .log { "Network available: $status"} // 网络可用时，发送连接状态
             }
 
             override fun onCapabilitiesChanged(network: Network, networkCapabilities: NetworkCapabilities) {
                 if (network == connectivityManager.activeNetwork) {
                     val status = WifiStatus.Connected
                     channel.trySend(status)
-                    log("Network changed: $status") // 网络能力变化时，发送连接状态
+                        .log { "Network capabilities changed: $status" } // 网络能力变化时，发送连接状态
                 }
             }
 
@@ -109,20 +109,20 @@ class WifiStatusMonitor(
                 if (network == connectivityManager.activeNetwork) {
                     val status = WifiStatus.Connected
                     channel.trySend(status)
-                    log("Network changed: $status") // 网络链接属性变化时，发送连接状态
+                        .log { "Link properties changed: $status" } // 网络链接属性变化时，发送连接状态
                 }
             }
 
             override fun onUnavailable() {
                 val status = WifiStatus.Disconnected
                 channel.trySend(status)
-                log("Status sent onUnavailable: $status") // 网络不可用时，发送断开状态
+                    .log { "Network unavailable: $status" } // 网络不可用时，发送断开状态
             }
 
             override fun onLost(network: Network) {
                 val status = wifiManager.getNoConnectionPresentStatus()
                 channel.trySend(status)
-                log("Status sent onLost: $status") // 网络丢失时，发送断开状态
+                    .log { "Network lost: $status" } // 网络丢失时，发送断开状态
             }
         }
 
@@ -142,7 +142,7 @@ class WifiStatusMonitor(
                             else -> WifiStatus.Unknown
                         }
                         channel.trySend(status)
-                        log("Wi-Fi state changed: $status")
+                            .log { "Wi-Fi state changed: $status" }
                     }
                 }
             }
@@ -165,11 +165,4 @@ class WifiStatusMonitor(
      */
     private fun WifiManager.getNoConnectionPresentStatus(): WifiStatus =
         if (isWifiEnabled) WifiStatus.Disconnected else WifiStatus.Disabled
-
-    /**
-     * 用于调试的日志辅助函数。
-     */
-    private fun log(message: String) {
-        e { message }
-    }
 }
