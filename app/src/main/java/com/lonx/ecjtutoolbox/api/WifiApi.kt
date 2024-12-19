@@ -16,6 +16,8 @@ import java.net.SocketTimeoutException
 import java.util.concurrent.TimeUnit
 
 class WifiApi {
+    private val loginOutUrl = "http://172.16.2.100:801/eportal/?c=ACSetting&a=Logout&wlanuserip=null&wlanacip=null&wlanacname=null&port=&hostname=172.16.2.100&iTermType=1&session=null&queryACIP=0&mac=00-00-00-00-00-00"
+    private val loginInUrl = "http://172.16.2.100:801/eportal/?c=ACSetting&a=Login&protocol=http:&hostname=172.16.2.100&iTermType=1&wlanacip=null&wlanacname=null&mac=00-00-00-00-00-00&enAdvert=0&queryACIP=0&loginMethod=1"
     fun getNetworkType(context: Context): NetworkType {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val network = connectivityManager.activeNetwork
@@ -41,7 +43,7 @@ class WifiApi {
             else -> "unicom"
         }
 
-        d{"开始创建OkHttpClient对象"}
+        d {"开始创建OkHttpClient对象"}
         val client = OkHttpClient.Builder()
             .followRedirects(false)
             .build()
@@ -50,7 +52,7 @@ class WifiApi {
         val mediaType = "application/x-www-form-urlencoded".toMediaType()
         val postBody = "DDDDD=%2C0%2C$studentID@$strTheISP&upass=$passwordECJTU&R1=0&R2=0&R3=0&R6=0&para=00&0MKKey=123456&buttonClicked=&redirect_url=&err_flag=&username=&password=&user=&cmd=&Login="
         val request = Request.Builder()
-            .url("http://172.16.2.100:801/eportal/?c=ACSetting&a=Login&protocol=http:&hostname=172.16.2.100&iTermType=1&wlanacip=null&wlanacname=null&mac=00-00-00-00-00-00&enAdvert=0&queryACIP=0&loginMethod=1")
+            .url(loginInUrl)
             .post(postBody.toRequestBody(mediaType))
             .build()
 
@@ -68,7 +70,7 @@ class WifiApi {
                 val endIndex = location.indexOf("&", startIndex)
                 if (startIndex >= 0 && endIndex >= 0) {
                     return when (location.substring(startIndex, endIndex)) {
-                        "userid error1" -> "E3 账号不存在(或未绑定宽带账号或运营商选择有误)"
+                        "userid error1" -> "E3 账号不存在(可能未绑定宽带账号或运营商选择有误)"
                         "userid error2" -> "E3 密码错误"
                         "512" -> "E3 AC认证失败(可能重复登录)"
                         "Rad:Oppp error: Limit Users Err" -> "E3 超出校园网设备数量限制"
@@ -89,7 +91,31 @@ class WifiApi {
             "E0 发送登录请求失败，捕获到异常：${e.message}"
         }
     }
+    fun loginOut(): String {
+        val client = OkHttpClient.Builder()
+            .followRedirects(false)
+            .build()
+        val mediaType = "application/x-www-form-urlencoded".toMediaType()
+        val request = Request.Builder()
+            .url(loginOutUrl)
+            .post(
+                body = "".toRequestBody(mediaType)
+            )
+            .build()
 
+        val response = client.newCall(request).execute()
+        val location = response.headers["Location"]
+        if (location != null) {
+            return if (location.contains("ACLogOut=1")) {
+                "注销成功！"
+            } else if (location.contains("ACLogOut=2")) {
+                "注销失败，未连接网络或连接的不是校园网"
+            } else {
+                "注销失败，未知错误！"
+            }
+        }
+        return "注销失败，未知错误！"
+    }
     fun getState(): Int {
         d { "开始创建OkHttpClient对象" }
         val client = OkHttpClient.Builder()

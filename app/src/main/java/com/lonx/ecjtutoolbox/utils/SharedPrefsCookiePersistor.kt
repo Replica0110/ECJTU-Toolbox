@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 import com.franmontiel.persistentcookiejar.persistence.CookiePersistor
 import com.franmontiel.persistentcookiejar.persistence.SerializableCookie
 import okhttp3.Cookie
-import timber.log.Timber
 
 class SharedPrefsCookiePersistor(private val sharedPreferences: SharedPreferences) : CookiePersistor {
 
@@ -26,7 +25,6 @@ class SharedPrefsCookiePersistor(private val sharedPreferences: SharedPreference
     override fun saveAll(cookies: Collection<Cookie>) {
         val editor = sharedPreferences.edit()
         cookies.forEach { cookie ->
-            Timber.tag("saveAll").e("saveAll: %s", cookie)
             editor.putString(createCookieKey(cookie), SerializableCookie().encode(cookie))
         }
         editor.apply()

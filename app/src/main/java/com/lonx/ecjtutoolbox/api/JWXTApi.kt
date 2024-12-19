@@ -1,6 +1,5 @@
 package com.lonx.ecjtutoolbox.api
 
-import com.franmontiel.persistentcookiejar.PersistentCookieJar
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.lonx.ecjtutoolbox.utils.Constants.CAS_ECJTU_DOMAIN
@@ -14,6 +13,7 @@ import com.lonx.ecjtutoolbox.utils.Constants.DCP_SSO_URL
 import com.lonx.ecjtutoolbox.utils.Constants.PWD_ENC_URL
 import com.lonx.ecjtutoolbox.utils.Constants.STU_AVATAR_L_URL
 import com.lonx.ecjtutoolbox.utils.Constants.USER_AGENT
+import com.lonx.ecjtutoolbox.utils.PersistentCookieJar
 import com.lonx.ecjtutoolbox.utils.StuProfileInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

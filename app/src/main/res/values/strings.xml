@@ -21,4 +21,10 @@
     <string name="menu_gpa">绩点查询</string>
     <string name="add">添加账号</string>
     <string name="dialog_account_tips">使用校园网时需要选择运营商以登录，若不需要可不选择</string>
+    <string name="wifi_status_icon">Wi-Fi状态图标</string>
+    <string name="wifi_disabled">Wi-Fi未启用</string>
+    <string name="ssid_not_connected">未连接网络</string>
+    <string name="login">登录</string>
+    <string name="logout">注销</string>
+    <string name="account_config">账号配置</string>
 </resources>

@@ -1,22 +1,98 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.wifi.WifiFragment">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TextView
-        android:id="@+id/text_wifi"
+    <data>
+        <variable
+            name="viewModel"
+            type="com.lonx.ecjtutoolbox.ui.wifi.WifiViewModel" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:tools="http://schemas.android.com/tools"
+        android:padding="16dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_height="match_parent"
+        tools:context=".ui.wifi.WifiFragment">
+
+        <!-- WiFi状态图标 -->
+        <ImageView
+            android:id="@+id/wifiStatusIcon"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginBottom="8dp"
+            android:contentDescription="图标"
+            android:onClick="@{() -> viewModel.openWifiSettings(context)}"
+            tools:srcCompat="@drawable/ic_wifi_disabled"
+            app:bindSrcCompat="@{viewModel.wifiStatusIcon}"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- WiFi状态描述文本 -->
+        <TextView
+            android:id="@+id/wifiStatusText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:onClick="@{() -> viewModel.openWifiSettings(context)}"
+            android:text="@{`网络状态：`+viewModel.wifiStatusText}"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            tools:text="@string/wifi_disabled"
+            app:layout_constraintTop_toBottomOf="@id/wifiStatusIcon"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- 当前连接SSID显示 -->
+        <TextView
+            android:id="@+id/currentSSID"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@{`网络名称：`+viewModel.currentSSID}"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            tools:text="@string/ssid_not_connected"
+            app:layout_constraintTop_toBottomOf="@id/wifiStatusText"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <!-- 登录按钮 -->
+        <Button
+            android:id="@+id/loginButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/currentSSID"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:onClick="@{(view) -> viewModel.loginIn(view)}"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/login" />
+
+        <!-- 注销按钮 -->
+        <Button
+            android:id="@+id/logoutButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/loginButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="8dp"
+            android:onClick="@{(view) -> viewModel.loginOut(view)}"
+            android:layout_marginBottom="16dp"
+            android:text="@string/logout" />
+        <!-- 账号配置按钮-->
+        <Button
+            android:id="@+id/accountButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/logoutButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="8dp"
+            android:text="@string/account_config"
+            android:onClick="@{(view) -> viewModel.accountConfig(view)}"
+            android:layout_marginBottom="16dp"
+        />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

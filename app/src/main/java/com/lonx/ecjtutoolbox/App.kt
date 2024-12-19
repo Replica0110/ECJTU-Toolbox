@@ -1,24 +1,35 @@
 package com.lonx.ecjtutoolbox
 
 import android.app.Application
-import com.franmontiel.persistentcookiejar.PersistentCookieJar
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.wifi.WifiManager
+import android.os.Build
+import android.os.Debug
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache
 
 import com.lonx.ecjtutoolbox.api.JWXTApi
+import com.lonx.ecjtutoolbox.ui.PermissionManager
 import com.lonx.ecjtutoolbox.ui.account.AccountViewModel
+import com.lonx.ecjtutoolbox.ui.wifi.WifiViewModel
 import com.lonx.ecjtutoolbox.utils.MyOkHttpClient
+import com.lonx.ecjtutoolbox.utils.PersistentCookieJar
 import com.lonx.ecjtutoolbox.utils.PreferencesManager
 import com.lonx.ecjtutoolbox.utils.SharedPrefsCookiePersistor
+import com.lonx.ecjtutoolbox.utils.WifiStatusMonitor
 import okhttp3.CookieJar
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
+import slimber.log.BuildConfig
+import timber.log.Timber
 
 class App: Application() {
     override fun onCreate() {
         super.onCreate()
+            Timber.plant(Timber.DebugTree())
 
         // Koin依赖注入配置
         val appModule = module {
@@ -44,7 +55,17 @@ class App: Application() {
                 JWXTApi(stuId, stuPassword, cookieJar as PersistentCookieJar, client)
             }
 
-            // 提供ViewModel
+            // 提供 WifiManager 和 ConnectivityManager
+            single { androidContext().getSystemService(Context.WIFI_SERVICE) as WifiManager }
+            single { androidContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager }
+
+            // 提供 WifiStatusMonitor
+
+            single { WifiStatusMonitor(get(), get()) }
+
+
+            // 提供 ViewModel
+            viewModel { WifiViewModel(get(),get()) }
             viewModel { AccountViewModel(get()) }
         }
 

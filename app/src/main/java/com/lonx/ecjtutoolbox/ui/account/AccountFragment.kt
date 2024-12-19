@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.lonx.ecjtutoolbox.R
 import com.lonx.ecjtutoolbox.api.JWXTApi
 import com.lonx.ecjtutoolbox.databinding.FragmentAccountBinding
@@ -41,14 +42,12 @@ class AccountFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentAccountBinding.inflate(inflater, container, false)
-
+        // 加载用户数据
+        accountViewModel.loadUserProfile()
         // 观察 LiveData 更新 UI
         accountViewModel.userProfile.observe(viewLifecycleOwner) { profile ->
             binding.m = profile
         }
-
-        // 加载用户数据
-        accountViewModel.loadUserProfile()
 
         return binding.root
     }
@@ -74,7 +73,7 @@ class AccountFragment : Fragment() {
         }
     }
     private fun addAccountDialog() {
-        val builder = AlertDialog.Builder(requireContext())
+        val builder = MaterialAlertDialogBuilder(requireContext())
         val view = layoutInflater.inflate(R.layout.dialog_add_account, null)
 
         val etStuId = view.findViewById<EditText>(R.id.account_stuid)

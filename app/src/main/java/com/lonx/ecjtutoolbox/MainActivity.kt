@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
     private val preferencesManager: PreferencesManager by lazy { PreferencesManager.getInstance(this) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Timber.plant(Timber.DebugTree())
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
