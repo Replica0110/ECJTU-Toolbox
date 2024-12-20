@@ -4,14 +4,11 @@ import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.wifi.WifiManager
-import android.os.Build
-import android.os.Debug
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache
-
 import com.lonx.ecjtutoolbox.api.JWXTApi
-import com.lonx.ecjtutoolbox.ui.PermissionManager
 import com.lonx.ecjtutoolbox.ui.account.AccountViewModel
 import com.lonx.ecjtutoolbox.ui.wifi.WifiViewModel
+import com.lonx.ecjtutoolbox.utils.LocationStatusMonitor
 import com.lonx.ecjtutoolbox.utils.MyOkHttpClient
 import com.lonx.ecjtutoolbox.utils.PersistentCookieJar
 import com.lonx.ecjtutoolbox.utils.PreferencesManager
@@ -23,7 +20,6 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
-import slimber.log.BuildConfig
 import timber.log.Timber
 
 class App: Application() {
@@ -60,12 +56,12 @@ class App: Application() {
             single { androidContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager }
 
             // 提供 WifiStatusMonitor
-
             single { WifiStatusMonitor(get(), get(),applicationContext) }
-
+            // 提供 LocationStatusMonitor
+            single { LocationStatusMonitor(applicationContext) }
 
             // 提供 ViewModel
-            viewModel { WifiViewModel(get(),get()) }
+            viewModel { WifiViewModel(get(),get(),get()) }
             viewModel { AccountViewModel(get(),get()) }
         }
 

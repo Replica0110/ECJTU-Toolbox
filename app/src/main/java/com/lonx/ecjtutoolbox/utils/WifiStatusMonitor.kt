@@ -42,7 +42,7 @@ class WifiStatusMonitor(
     private fun getWifiStatus(wifiManager: WifiManager, connectivityManager: ConnectivityManager): WifiStatus =
         when {
             !wifiManager.isWifiEnabled -> WifiStatus.Disabled // 如果 Wi-Fi 被禁用，返回禁用状态
-            connectivityManager.activeNetwork != null && connectivityManager.isWifiConnected == true -> WifiStatus.Connected // 如果 Wi-Fi 已连接，返回连接状态
+            connectivityManager.isWifiConnected == true -> WifiStatus.Connected // 如果 Wi-Fi 已连接，返回连接状态
             else -> WifiStatus.Disconnected // 否则返回断开状态
         }
 
@@ -137,7 +137,10 @@ class WifiStatusMonitor(
                     WifiManager.WIFI_STATE_CHANGED_ACTION -> {
                         val wifiState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_UNKNOWN)
                         val status = when (wifiState) {
-                            WifiManager.WIFI_STATE_ENABLED -> WifiStatus.Enabled
+                            WifiManager.WIFI_STATE_ENABLED -> {
+                                // 重新检查当前的 WiFi 连接状态
+                                getWifiStatus(wifiManager, connectivityManager)
+                            }
                             WifiManager.WIFI_STATE_DISABLED -> WifiStatus.Disabled
                             else -> WifiStatus.Unknown
                         }

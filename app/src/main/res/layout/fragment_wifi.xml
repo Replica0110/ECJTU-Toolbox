@@ -8,7 +8,9 @@
             name="viewModel"
             type="com.lonx.ecjtutoolbox.ui.wifi.WifiViewModel" />
     </data>
-
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:padding="16dp"
         android:layout_width="match_parent"
@@ -180,4 +182,5 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
 </layout>

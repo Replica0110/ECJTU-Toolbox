@@ -1,6 +1,6 @@
 package com.lonx.ecjtutoolbox.utils
 
-import slimber.log.i
+import slimber.log.e
 
 inline fun <T> T.log(makeMessage: (T) -> String = { it.toString() }): T =
-    also { i { makeMessage(this) } }
+    also { e { makeMessage(this) } }

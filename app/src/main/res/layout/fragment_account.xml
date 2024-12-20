@@ -11,7 +11,9 @@
             name="viewModel"
             type="com.lonx.ecjtutoolbox.ui.account.AccountViewModel" />
     </data>
-
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -307,4 +309,5 @@
                     android:text="@string/account_config" />
         </com.google.android.material.card.MaterialCardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
 </layout>
