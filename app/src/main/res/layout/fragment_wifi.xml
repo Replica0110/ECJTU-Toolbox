@@ -7,6 +7,9 @@
         <variable
             name="viewModel"
             type="com.lonx.ecjtutoolbox.ui.wifi.WifiViewModel" />
+        <variable
+            name="fragment"
+            type="com.lonx.ecjtutoolbox.ui.wifi.WifiFragment" />
     </data>
 <ScrollView
     android:layout_width="match_parent"
@@ -25,16 +28,18 @@
             android:layout_height="wrap_content"
             app:cardCornerRadius="4dp"
             android:elevation="2dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/gray"
             app:cardUseCompatPadding="true">
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp">
+                android:layout_height="wrap_content">
                 <!-- WiFi状态图标 -->
                 <ImageView
                     android:id="@+id/wifiStatusIcon"
                     android:layout_width="64dp"
                     android:layout_height="64dp"
+                    android:layout_margin="16dp"
                     android:layout_gravity="center"
                     android:onClick="@{(view) -> viewModel.openWifiSettings(view)}"
                     android:contentDescription="图标"
@@ -56,8 +61,7 @@
                     android:id="@+id/lbWifiStatusText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
+                    android:padding="8dp"
                     android:layout_gravity="center"
                     android:text="网络状态"
                     android:textColor="@color/primaryText"
@@ -69,8 +73,7 @@
                     android:id="@+id/tvWifiStatusText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
+                    android:padding="8dp"
                     android:layout_gravity="center"
                     android:text="@{viewModel.wifiStatusText}"
                     android:textColor="@color/secondaryText"
@@ -91,7 +94,7 @@
                     android:id="@+id/lbSSID"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingTop="8dp"
+                    android:padding="8dp"
                     android:layout_gravity="center"
                     android:text="SSID"
                     android:textColor="@color/primaryText"
@@ -103,7 +106,7 @@
                     android:id="@+id/tvSSID"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingTop="8dp"
+                    android:padding="8dp"
                     android:layout_gravity="center"
                     android:text="@{viewModel.ssid1}"
                     android:textColor="@color/secondaryText"
@@ -115,72 +118,189 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- 按钮部分 -->
         <com.google.android.material.card.MaterialCardView
             app:layout_constraintTop_toBottomOf="@id/wifiStatusCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardCornerRadius="4dp"
             android:elevation="2dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/gray"
             app:cardUseCompatPadding="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:gravity="center_horizontal">
 
-                <!-- 登录按钮 -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/loginButton"
-                    android:layout_gravity="center"
-                    android:layout_width="130dp"
+                <!-- 登录部分 -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:backgroundTint="@color/white"
-                    app:icon="@drawable/ic_wifi_login"
-                    app:iconTint="@color/textColor"
-                    app:rippleColor="@color/primary"
-                    tools:text="@string/login"
-                    app:elevation="0dp"
-                    android:textColor="@color/black"
-                    android:enabled="@{!viewModel.isLoggingIn}"
-                    android:onClick="@{(view) -> viewModel.loginIn(view)}"
-                    android:text="@{viewModel.isLoggingIn ? @string/logging_in : @string/login}" />
+                    android:padding="8dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:onClick="@{(view) -> viewModel.loginIn(view)}">
 
-                <!-- 注销按钮 -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/logoutButton"
-                    android:layout_gravity="center"
-                    android:layout_width="130dp"
-                    android:layout_height="wrap_content"
-                    app:icon="@drawable/ic_wifi_logout"
-                    app:backgroundTint="@color/white"
-                    app:iconTint="@color/textColor"
-                    app:rippleColor="@color/primary"
-                    app:elevation="0dp"
-                    tools:text="@string/logout"
-                    android:textColor="@color/black"
-                    android:enabled="@{!viewModel.isLoggingOut}"
-                    android:onClick="@{(view) -> viewModel.loginOut(view)}"
-                    android:text="@{viewModel.isLoggingOut ? @string/logging_out : @string/logout}" />
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp">
 
-                <!-- 账号配置按钮 -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/accountButton"
-                    android:layout_gravity="center"
-                    android:layout_width="130dp"
+                        <!-- 图标 -->
+                        <ImageView
+                            android:id="@+id/iconLogin"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_wifi_login"
+                            android:contentDescription="图标"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent" />
+
+                        <!-- 文本 -->
+                        <TextView
+                            android:id="@+id/textLogin"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{viewModel.isLoggingIn ? @string/logging_in : @string/login}"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:layout_marginStart="8dp"
+                            android:gravity="center"
+                            app:layout_constraintStart_toEndOf="@+id/iconLogin"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            tools:text="@string/login"/>
+                        <ImageView
+                            android:id="@+id/iconArrow1"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:contentDescription="图标"
+                            android:src="@drawable/ic_arrow_right"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.google.android.material.card.MaterialCardView>
+                <View
+                    android:id="@+id/line3"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@android:color/darker_gray"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/iconLogin"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+                <!-- 注销部分 -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:backgroundTint="@color/white"
-                    app:iconTint="@color/textColor"
-                    app:rippleColor="@color/primary"
-                    app:elevation="0dp"
-                    app:icon="@drawable/ic_wifi_account"
-                    android:textColor="@color/black"
-                    android:enabled="@{!viewModel.dialogShowed}"
-                    android:onClick="@{(view) -> viewModel.accountConfig(view)}"
-                    android:text="@string/account_config" />
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:onClick="@{(view) -> viewModel.loginOut(view)}">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp">
+
+                        <!-- 图标 -->
+                        <ImageView
+                            android:id="@+id/iconLogout"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_wifi_logout"
+                            android:contentDescription="图标"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
+
+                        <!-- 文本 -->
+                        <TextView
+                            android:id="@+id/textLogout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{viewModel.isLoggingOut ? @string/logging_out : @string/logout}"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:layout_marginStart="8dp"
+                            android:gravity="center"
+                            app:layout_constraintStart_toEndOf="@+id/iconLogout"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            tools:text="@string/logout"/>
+                        <ImageView
+                            android:id="@+id/iconArrow2"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:contentDescription="图标"
+                            android:src="@drawable/ic_arrow_right"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.google.android.material.card.MaterialCardView>
+                <View
+                    android:id="@+id/line4"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@android:color/darker_gray"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/iconLogout"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+                <!-- 账号配置部分 -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:onClick="@{(view) -> viewModel.accountConfig(view)}">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp">
+
+                        <!-- 图标 -->
+                        <ImageView
+                            android:id="@+id/iconAccount"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_wifi_account"
+                            android:contentDescription="图标"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent" />
+
+                        <!-- 文本 -->
+                        <TextView
+                            android:id="@+id/tvAccount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/account_config"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:layout_marginStart="8dp"
+                            android:gravity="center"
+                            app:layout_constraintStart_toEndOf="@+id/iconAccount"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
+                        <ImageView
+                            android:id="@+id/iconArrow3"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:contentDescription="图标"
+                            android:src="@drawable/ic_arrow_right"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.google.android.material.card.MaterialCardView>
+
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
 </layout>

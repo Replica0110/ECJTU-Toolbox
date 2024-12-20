@@ -15,6 +15,9 @@ import android.widget.Spinner
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.requestPermissions
+import androidx.core.app.ActivityCompat.startActivities
+import androidx.core.app.ActivityCompat.startActivity
+import androidx.core.content.ContextCompat
 import androidx.databinding.ObservableField
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -32,8 +35,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.koin.core.parameter.parametersOf
-import org.koin.dsl.module
 import slimber.log.d
 
 class WifiViewModel(
@@ -103,24 +104,22 @@ class WifiViewModel(
                     Manifest.permission.ACCESS_FINE_LOCATION
                 )
             ) {
-                // 用户之前拒绝了权限，直接弹出权限请求
                 requestPermissions(
                     context,
                     arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                     LOCATION_PERMISSION_REQUEST_CODE
                 )
             } else {
-                // 如果用户未拒绝过或选择了"不再提示"，弹出说明并直接请求权限
+                // 如果用户拒绝过，弹出说明
                 AlertDialog.Builder(context).apply {
                     setTitle("需要位置权限")
                     setMessage("应用需要位置权限以获取WiFi信息，请授予该权限")
                     setPositiveButton("确定") { _, _ ->
                         // 请求权限
-                        requestPermissions(
-                            context,
-                            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                            LOCATION_PERMISSION_REQUEST_CODE
-                        )
+                        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                            data = android.net.Uri.fromParts("package", context.packageName, null)
+                        }
+                        context.startActivity(intent)
                     }
                     setNegativeButton("取消", null)
                     show()
@@ -141,6 +140,7 @@ class WifiViewModel(
     }
 
     fun accountConfig(view1: View) {
+        if (dialogShowed.value == true) return
         dialogShowed.value = true
         val context = view1.context
         val view = View.inflate(context, R.layout.dialog_add_account, null)
@@ -164,8 +164,14 @@ class WifiViewModel(
                 preferencesManager.putString("student_id", stuIdEditText.text.toString())
                 preferencesManager.putString("student_pwd", stuPwdEditText.text.toString())
                 preferencesManager.putInt("isp", ispSpinner.selectedItemPosition + 1)
+                dialogShowed.value = false
             }
-            .setNegativeButton("取消") { _, _ -> }
+            .setNegativeButton("取消") { _, _ ->
+                dialogShowed.value = false
+            }
+            .setOnDismissListener {
+                dialogShowed.value = false
+            }
             .show()
         dialogShowed.value = false
     }
@@ -186,6 +192,7 @@ class WifiViewModel(
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     fun loginIn(view: View) {
+        if (isLoggingIn.value == true) return
         d { "Login in" }
         val stuId = preferencesManager.getString("student_id", "")
         val stuPwd = preferencesManager.getString("student_pwd", "")
@@ -227,34 +234,34 @@ class WifiViewModel(
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     fun loginOut(view: View) {
-            d { "Login out" }
-            isLoggingOut.value = true
-            viewModelScope.launch(Dispatchers.IO) {
-                try {
-                    var title = ""
-                    var result = wifiApi.loginOut()
-                    if (result.startsWith("E")) {
-                        title = "注销失败"
-                        result = result.substring(3)
-                    } else {
-                        title = "注销成功"
-                    }
-                    withContext(Dispatchers.Main) {
-                        infoDialog(view.context, title, result)
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    withContext(Dispatchers.Main) {
-                        infoDialog(view.context, "注销失败", "注销失败，请重试: ${e.message}")
-                    }
-                } finally {
-                    withContext(Dispatchers.Main) {
-                        isLoggingOut.value = false
-                    }
-
+        if (isLoggingOut.value == true) return
+        d { "Login out" }
+        isLoggingOut.value = true
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                var title = ""
+                var result = wifiApi.loginOut()
+                if (result.startsWith("E")) {
+                    title = "注销失败"
+                    result = result.substring(3)
+                } else {
+                    title = "注销成功"
+                }
+                withContext(Dispatchers.Main) {
+                    infoDialog(view.context, title, result)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                withContext(Dispatchers.Main) {
+                    infoDialog(view.context, "注销失败", "注销失败，请重试: ${e.message}")
+                }
+            } finally {
+                withContext(Dispatchers.Main) {
+                    isLoggingOut.value = false
                 }
             }
         }
+    }
 
     private fun updateUi(wifiStatus: WifiStatus, locationStatus: LocationStatus, context: Context) {
             when (wifiStatus) {
@@ -291,14 +298,14 @@ class WifiViewModel(
             }
         when (locationStatus) {
             LocationStatus.Disabled -> {
-                ssid1.set("位置信息不可用")
+                ssid1.set("位置信息不可用，点击打开")
             }
 
             LocationStatus.Enabled -> {
             }
 
             LocationStatus.PermissionDenied -> {
-                ssid1.set("位置信息不可用")
+                ssid1.set("未授予位置信息权限，点击授权")
             }
 
             LocationStatus.Unknown -> {

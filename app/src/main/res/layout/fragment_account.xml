@@ -29,18 +29,20 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:cardCornerRadius="4dp"
             android:elevation="2dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/gray"
             app:cardUseCompatPadding="true">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp">
+                android:layout_height="wrap_content">
 
                 <!-- 头像 -->
                 <ImageView
                     android:id="@+id/ivAvatar"
                     android:layout_width="64dp"
                     android:layout_height="64dp"
+                    android:layout_margin="16dp"
                     android:src="@drawable/ic_avatar_placeholder"
                     android:contentDescription="头像"
                     app:layout_constraintStart_toStartOf="parent"
@@ -53,6 +55,7 @@
                     android:layout_height="wrap_content"
                     android:text="@{info.userName}"
                     android:textSize="20sp"
+                    android:padding="8dp"
                     android:layout_marginEnd="8sp"
                     android:textColor="@color/primaryText"
                     app:layout_constraintEnd_toStartOf="@id/tvSex"
@@ -67,6 +70,7 @@
                     android:layout_height="wrap_content"
                     android:text="@{info.SexName}"
                     android:textSize="15sp"
+                    android:padding="8dp"
                     android:layout_marginStart="4dp"
                     android:textColor="@color/secondaryText"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -93,8 +97,7 @@
                     android:text="学号"
                     android:textSize="16sp"
                     android:textColor="@color/primaryText"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
+                    android:padding="8dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/line1" />
 
@@ -105,8 +108,7 @@
                     android:text="@{info.idNumber}"
                     android:textSize="16sp"
                     android:textColor="@color/secondaryText"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
+                    android:padding="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/line1"
                     tools:text="学号" />
@@ -128,8 +130,7 @@
                     android:text="用户ID"
                     android:textSize="16sp"
                     android:textColor="@color/primaryText"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
+                    android:padding="8dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvIdNumber" />
 
@@ -140,8 +141,7 @@
                     android:text="@{info.userId}"
                     android:textSize="16sp"
                     android:textColor="@color/secondaryText"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
+                    android:padding="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvIdNumber"
                     tools:text="用户ID" />
@@ -163,8 +163,7 @@
                     android:text="单位"
                     android:textSize="16sp"
                     android:textColor="@color/primaryText"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
+                    android:padding="8dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvUserId" />
 
@@ -175,8 +174,7 @@
                     android:text="@{info.unitName}"
                     android:textSize="16sp"
                     android:textColor="@color/secondaryText"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
+                    android:padding="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvUserId"
                     tools:text="单位" />
@@ -196,8 +194,7 @@
                     android:id="@+id/lbBirthday"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
+                    android:padding="8dp"
                     android:text="生日"
                     android:textColor="@color/primaryText"
                     android:textSize="16sp"
@@ -211,8 +208,7 @@
                     android:text="@{info.birthday}"
                     android:textSize="16sp"
                     android:textColor="@color/secondaryText"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
+                    android:padding="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvUnitName"
                     tools:text="生日" />
@@ -239,8 +235,7 @@
                     android:id="@+id/lbIdType"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
+                    android:padding="8dp"
                     android:text="身份"
                     android:textColor="@color/primaryText"
                     android:textSize="16sp"
@@ -254,8 +249,7 @@
                     android:text="@{info.idTypeName}"
                     android:textSize="16sp"
                     android:textColor="@color/secondaryText"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
+                    android:padding="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvBirthday"
                     tools:text="身份" />
@@ -267,7 +261,7 @@
                     android:text="手机号"
                     android:textSize="16sp"
                     android:textColor="@color/primaryText"
-                    android:paddingTop="8dp"
+                    android:padding="8dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvIdType" />
 
@@ -278,7 +272,7 @@
                     android:text="@{info.mobile}"
                     android:textSize="16sp"
                     android:textColor="@color/secondaryText"
-                    android:paddingTop="8dp"
+                    android:padding="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvIdType"
                     tools:text="手机号" />
@@ -291,22 +285,52 @@
             android:layout_height="wrap_content"
             app:cardCornerRadius="4dp"
             android:elevation="2dp"
-            app:cardUseCompatPadding="true">
+            app:cardUseCompatPadding="true"
+            android:clickable="true"
+            android:focusable="true"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/gray"
+            android:onClick="@{(view) -> viewModel.accountConfig(view)}">
                 <!-- 账号配置按钮 -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/accountButton"
-                    android:layout_gravity="center"
-                    android:layout_width="130dp"
-                    android:layout_height="wrap_content"
-                    app:backgroundTint="@color/white"
-                    app:rippleColor="@color/primary"
-                    app:iconTint="@color/black"
-                    app:icon="@drawable/ic_wifi_account"
-                    app:elevation="0dp"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="8dp">
+
+                <!-- 图标 -->
+                <ImageView
+                    android:id="@+id/iconAccount"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="图标"
+                    android:src="@drawable/ic_wifi_account"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+                <!-- 文本 -->
+                <TextView
+                    android:id="@+id/tvAccount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/account_config"
                     android:textColor="@color/black"
-                    android:enabled="@{!viewModel.dialogShowed}"
-                    android:onClick="@{(view) -> viewModel.accountConfig(view)}"
-                    android:text="@string/account_config" />
+                    android:textSize="16sp"
+                    android:layout_marginStart="8dp"
+                    android:gravity="center"
+                    app:layout_constraintStart_toEndOf="@+id/iconAccount"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+                <ImageView
+                    android:id="@+id/iconArrow"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="图标"
+                    android:src="@drawable/ic_arrow_right"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

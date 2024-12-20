@@ -12,13 +12,11 @@ import com.drake.statusbar.immersive
 import com.lonx.ecjtutoolbox.api.JWXTApi
 import com.lonx.ecjtutoolbox.databinding.ActivityMainBinding
 import com.lonx.ecjtutoolbox.utils.PreferencesManager
-import com.lonx.ecjtutoolbox.utils.StuProfileInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import slimber.log.e
-import timber.log.Timber
 
 
 class MainActivity : AppCompatActivity() {
@@ -26,8 +24,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var stuId: String
     private lateinit var stuPassword: String
     private var isp = 1
-
-    private lateinit var stuProfileInfo: StuProfileInfo
 
     private val jwxtApi: JWXTApi by inject()
     private val preferencesManager: PreferencesManager by lazy { PreferencesManager.getInstance(this) }
