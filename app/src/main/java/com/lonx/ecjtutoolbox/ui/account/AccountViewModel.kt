@@ -6,6 +6,7 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.Toast
+import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -29,7 +30,11 @@ class AccountViewModel(
     private val ispOptions = arrayOf("中国电信", "中国移动", "中国联通")
     private val _userProfile = MutableLiveData<StuProfileInfo>()
     val userProfile: LiveData<StuProfileInfo> get() = _userProfile
-    val dialogShowed = MutableLiveData(false)
+    private val dialogShowed = MutableLiveData(false)
+    var isRefreshLogin =  MutableLiveData(false)
+    init {
+        isRefreshLogin.value=preferencesManager.getBoolean("refresh_login", false)
+    }
     // 加载用户数据
     fun loadUserProfile() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -42,7 +47,13 @@ class AccountViewModel(
             }
         }
     }
+    fun refreshLogin(view: View) {
+        isRefreshLogin.value=!isRefreshLogin.value!!
+        preferencesManager.putBoolean("refresh_login", isRefreshLogin.value!!)
+    }
     fun accountConfig(view1: View) {
+        if (dialogShowed.value == true) return
+        dialogShowed.value = true
         val context = view1.context
         val builder = MaterialAlertDialogBuilder(context)
         val view = View.inflate(context, R.layout.dialog_add_account, null)
@@ -73,10 +84,16 @@ class AccountViewModel(
                 } catch (e: Exception){
                     e.printStackTrace()
                     Toast.makeText(context, "出现错误：${e.message}", Toast.LENGTH_SHORT).show()
+                } finally {
+                    dialogShowed.value = false
                 }
             }
             .setNegativeButton("取消") { dialog, _ ->
                 dialog.dismiss()
+                dialogShowed.value = false
+            }
+            .setOnDismissListener{
+                dialogShowed.value = false
             }
 
         builder.create().show()

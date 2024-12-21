@@ -18,6 +18,9 @@ class PreferencesManager private constructor(context: Context) {
     fun getBoolean(key: String, defaultValue: Boolean): Boolean {
         return preferences.getBoolean(key, defaultValue)
     }
+    fun putBoolean(key: String, value: Boolean) {
+        preferences.edit().putBoolean(key, value).apply()
+    }
     fun putString(key: String, value: String) {
         preferences.edit().putString(key, value).apply()
     }

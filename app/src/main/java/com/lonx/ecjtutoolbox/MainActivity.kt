@@ -56,10 +56,10 @@ class MainActivity : AppCompatActivity() {
         stuId = preferencesManager.getString("student_id", "")
         stuPassword = preferencesManager.getString("student_pwd", "")
         isp = preferencesManager.getInt("isp", 1)
-
+        val refresh = preferencesManager.getBoolean("refresh_login", false)
         val isLogin = jwxtApi.hasLogin(1)
         e { "isLogin: $isLogin" }
-        if (isLogin) {
+        if (isLogin && !refresh) {
             Toast.makeText(this, "已登录", Toast.LENGTH_SHORT).show()
             return
         }
@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity() {
         }
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                val loginResult = jwxtApi.login(false)
+                val loginResult = jwxtApi.login(refresh)
                 withContext(Dispatchers.Main) {
                     binding.drawer.closeDrawers()
                     Toast.makeText(this@MainActivity, loginResult, Toast.LENGTH_LONG).show()

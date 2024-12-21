@@ -12,7 +12,8 @@ import com.lonx.ecjtutoolbox.databinding.FragmentWifiBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class WifiFragment : Fragment() {
-    private lateinit var binding: FragmentWifiBinding
+    private var _binding: FragmentWifiBinding? = null
+    private val binding get() = _binding!!
     private val wifiViewModel: WifiViewModel by viewModel()
     private val LOCATION_PERMISSION_REQUEST_CODE = 100
     override fun onCreateView(
@@ -20,7 +21,7 @@ class WifiFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         // 初始化 DataBinding
-        binding = FragmentWifiBinding.inflate(inflater, container, false)
+        _binding = FragmentWifiBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = wifiViewModel
         return binding.root
@@ -51,5 +52,9 @@ class WifiFragment : Fragment() {
             // 订阅状态
             wifiViewModel.observeStatuses(requireContext())
         }
+    }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

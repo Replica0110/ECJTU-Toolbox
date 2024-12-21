@@ -166,14 +166,14 @@ class WifiViewModel(
                 preferencesManager.putInt("isp", ispSpinner.selectedItemPosition + 1)
                 dialogShowed.value = false
             }
-            .setNegativeButton("取消") { _, _ ->
+            .setNegativeButton("取消") { dialog, _ ->
+                dialog.dismiss()
                 dialogShowed.value = false
             }
             .setOnDismissListener {
                 dialogShowed.value = false
             }
             .show()
-        dialogShowed.value = false
     }
 
     fun updateSSID(context: Context) {
@@ -193,6 +193,10 @@ class WifiViewModel(
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     fun loginIn(view: View) {
         if (isLoggingIn.value == true) return
+        if (wifiStatusIcon.get() != R.drawable.ic_wifi_connected) {
+            infoDialog(view.context, "登录失败", "请先连接校园网")
+            return
+        }
         d { "Login in" }
         val stuId = preferencesManager.getString("student_id", "")
         val stuPwd = preferencesManager.getString("student_pwd", "")
@@ -235,6 +239,10 @@ class WifiViewModel(
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     fun loginOut(view: View) {
         if (isLoggingOut.value == true) return
+        if (wifiStatusIcon.get() != R.drawable.ic_wifi_connected) {
+            infoDialog(view.context, "注销失败", "请先连接校园网")
+            return
+        }
         d { "Login out" }
         isLoggingOut.value = true
         viewModelScope.launch(Dispatchers.IO) {

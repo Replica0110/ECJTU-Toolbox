@@ -67,7 +67,7 @@ class WifiApi {
             val location = headers["Location"]
             if (location != null) {
                 if (!location.contains("RetCode=")) {
-                    return "登录完成"
+                    return "登录成功！"
                 }
                 val startIndex = location.indexOf("RetCode=") + 8
                 val endIndex = location.indexOf("&", startIndex)
