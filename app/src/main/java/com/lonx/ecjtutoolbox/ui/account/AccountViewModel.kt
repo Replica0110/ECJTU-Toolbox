@@ -15,6 +15,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.lonx.ecjtutoolbox.R
 import com.lonx.ecjtutoolbox.api.JWXTApi
+import com.lonx.ecjtutoolbox.utils.LoginResult
 import com.lonx.ecjtutoolbox.utils.PreferencesManager
 import com.lonx.ecjtutoolbox.utils.StuProfileInfo
 import kotlinx.coroutines.Dispatchers
@@ -75,9 +76,15 @@ class AccountViewModel(
                 try {
                     viewModelScope.launch(Dispatchers.IO) {
                         jwxtApi.updateInfo(etStuId.text.toString(),etStuPassword.text.toString()) // 更新账号信息
-                        val state = jwxtApi.login(true)
-                        val profile = jwxtApi.getProfile()
-                        _userProfile.postValue(profile) // 更新数据
+                        val result = jwxtApi.login(true)
+                        val state = when (result) {
+                            is LoginResult.Success -> "登录成功"
+                            is LoginResult.Failure -> "登录失败：${result.error}"
+                        }
+                        if (result is LoginResult.Success) {
+                            val profile = jwxtApi.getProfile()
+                            _userProfile.postValue(profile)
+                        }
                         withContext(Dispatchers.Main) { Toast.makeText(context, state, Toast.LENGTH_LONG).show()}
                     }
 

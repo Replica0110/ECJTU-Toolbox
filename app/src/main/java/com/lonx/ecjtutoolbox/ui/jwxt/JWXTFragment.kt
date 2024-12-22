@@ -20,16 +20,10 @@ class JWXTFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val homeViewModel =
-            ViewModelProvider(this)[JWXTViewModel::class.java]
 
         _binding = FragmentJwxtBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textJwxt
-        homeViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
         return root
     }
 

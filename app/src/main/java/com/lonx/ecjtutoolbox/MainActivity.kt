@@ -6,20 +6,18 @@ import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.FragmentNavigator
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.drake.statusbar.immersive
 import com.lonx.ecjtutoolbox.api.JWXTApi
 import com.lonx.ecjtutoolbox.databinding.ActivityMainBinding
+import com.lonx.ecjtutoolbox.utils.LoginResult
 import com.lonx.ecjtutoolbox.utils.PreferencesManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
-import slimber.log.e
 
 
 class MainActivity : AppCompatActivity() {
@@ -27,7 +25,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var toggle: ActionBarDrawerToggle // 声明 ActionBarDrawerToggle
     private val preferencesManager: PreferencesManager by lazy { PreferencesManager.getInstance(this) }
-
+    private val jwxtApi: JWXTApi by inject()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -70,9 +68,9 @@ class MainActivity : AppCompatActivity() {
     private fun initLogin() {
         val stuId = preferencesManager.getString("student_id", "")
         val stuPassword = preferencesManager.getString("student_pwd", "")
-        val isp = preferencesManager.getInt("isp", 1)
+        preferencesManager.getInt("isp", 1)
         val refresh = preferencesManager.getBoolean("refresh_login", false)
-        val isLogin = false
+        val isLogin = jwxtApi.hasLogin(1)
 
         if (isLogin && !refresh) {
             Toast.makeText(this, "已登录", Toast.LENGTH_SHORT).show()
@@ -86,10 +84,12 @@ class MainActivity : AppCompatActivity() {
 
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                val loginResult = "登录成功"
+                val msg = when (val loginResult = jwxtApi.login(refresh)) {
+                    is LoginResult.Success -> "登录成功"
+                    is LoginResult.Failure -> "登录失败：${loginResult.error}"
+                }
                 withContext(Dispatchers.Main) {
-                    binding.drawer.closeDrawers()
-                    Toast.makeText(this@MainActivity, loginResult, Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@MainActivity, msg, Toast.LENGTH_LONG).show()
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {

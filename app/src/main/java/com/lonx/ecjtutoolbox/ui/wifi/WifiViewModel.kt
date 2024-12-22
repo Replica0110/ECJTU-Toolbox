@@ -15,15 +15,13 @@ import android.widget.Spinner
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.requestPermissions
-import androidx.core.app.ActivityCompat.startActivities
-import androidx.core.app.ActivityCompat.startActivity
-import androidx.core.content.ContextCompat
 import androidx.databinding.ObservableField
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.lonx.ecjtutoolbox.R
+import com.lonx.ecjtutoolbox.api.JWXTApi
 import com.lonx.ecjtutoolbox.api.WifiApi
 import com.lonx.ecjtutoolbox.utils.LocationStatus
 import com.lonx.ecjtutoolbox.utils.LocationStatusMonitor
@@ -38,6 +36,7 @@ import kotlinx.coroutines.withContext
 import slimber.log.d
 
 class WifiViewModel(
+    private val jwxtApi: JWXTApi,
     private val wifiStatusMonitor: WifiStatusMonitor,
     private val locationStatusMonitor: LocationStatusMonitor,
     private val preferencesManager: PreferencesManager
@@ -52,13 +51,41 @@ class WifiViewModel(
     val dialogShowed = MutableLiveData(false)
     private val wifiApi = WifiApi()
     private val LOCATION_PERMISSION_REQUEST_CODE = 100
+    /**
+     * 打开Wi-Fi设置界面
+     *
+     * 此函数用于在当前应用中打开系统的Wi-Fi设置界面它创建了一个意图，
+     * 指定要执行的操作是打开Wi-Fi设置，并添加了标志以确保该操作在一个新的任务中启动
+     * 这是为了处理用户可能需要配置Wi-Fi网络的情况，提供了一种简便的方式直接访问设置界面
+     *
+     * @param view 触发此动作的视图对象，用于获取上下文信息
+     */
     fun openWifiSettings(view: View) {
+        // 获取视图所在的上下文，用于启动活动
         val context = view.context
+
+        // 创建一个意图，指定要执行的动作是打开Wi-Fi设置
         val intent = Intent(Settings.ACTION_WIFI_SETTINGS)
+
+        // 添加标志以确保此意图启动一个新的任务
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+        // 使用上下文启动Wi-Fi设置界面
         context.startActivity(intent)
     }
 
+    /**
+     * 观察Wi-Fi和定位状态的变化，并更新UI
+     *
+     * @param context 上下文，用于在更新UI时访问资源或进行与UI相关的操作
+     *
+     * 注：该函数需要Android API级别为TIRAMISU或更高版本
+     * 功能描述：
+     * 1. 在视图模型范围内启动一个协程，用于观察Wi-Fi和定位状态的变化
+     * 2. 使用combine函数组合wifiStatus和locationStatus的流，将它们配对以便同时处理
+     * 3. collectLatest确保在任何时刻只有一个活跃的收集操作，避免了背压问题
+     * 4. 每当状态发生变化时，调用updateUi函数更新UI，以反映当前的Wi-Fi和定位状态
+     */
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     fun observeStatuses(context: Context) {
         viewModelScope.launch {
@@ -68,7 +95,7 @@ class WifiViewModel(
             ) { wifiStatus, locationStatus ->
                 Pair(wifiStatus, locationStatus)
             }.collectLatest { (wifiStatus, locationStatus) ->
-                updateUi(wifiStatus, locationStatus,context)
+                updateUi(wifiStatus, locationStatus, context)
             }
         }
     }
@@ -161,9 +188,14 @@ class WifiViewModel(
             .setView(view)
             .setTitle("账号配置")
             .setPositiveButton("确定") { _, _ ->
+                // 保存账号配置
                 preferencesManager.putString("student_id", stuIdEditText.text.toString())
                 preferencesManager.putString("student_pwd", stuPwdEditText.text.toString())
                 preferencesManager.putInt("isp", ispSpinner.selectedItemPosition + 1)
+                // 更新JWXT API
+                if (studentId != stuIdEditText.text.toString() || studentPwd != stuPwdEditText.text.toString()) {
+                    jwxtApi.updateInfo(stuIdEditText.text.toString(), stuPwdEditText.text.toString())
+                }
                 dialogShowed.value = false
             }
             .setNegativeButton("取消") { dialog, _ ->

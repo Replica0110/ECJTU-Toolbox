@@ -62,8 +62,8 @@ class App: Application() {
             single { LocationStatusMonitor(applicationContext) }
             factory { WifiFragment() }
             // 提供 ViewModel
-            viewModel { WifiViewModel(get(),get(),get()) }
-            viewModel { AccountViewModel(get(),get()) }
+            viewModel { WifiViewModel(jwxtApi = get(), wifiStatusMonitor = get(), locationStatusMonitor = get(), preferencesManager = get()) }
+            viewModel { AccountViewModel(jwxtApi = get(), preferencesManager = get()) }
         }
 
         // 启动Koin

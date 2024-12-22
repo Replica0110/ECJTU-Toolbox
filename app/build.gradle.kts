@@ -1,10 +1,26 @@
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.TimeZone.getDefault
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("kotlin-kapt")
     kotlin("plugin.serialization")
 }
-
+fun getVersionCode(): Int {
+    val cmd = "git rev-list HEAD --first-parent --count"
+    val process = Runtime.getRuntime().exec(cmd)
+    return try {
+        process.waitFor()
+        process.inputStream.bufferedReader().readText().trim().toInt()
+    } catch (e: Exception) {
+        e.printStackTrace()
+        0
+    } finally {
+        process.destroy()
+    }
+}
 android {
     namespace = "com.lonx.ecjtutoolbox"
     compileSdk = 35
@@ -13,9 +29,25 @@ android {
         applicationId = "com.lonx.ecjtutoolbox"
         minSdk = 26
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = getVersionCode()
+        versionName = "1.0.0"
+        val buildTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").apply {
+            timeZone = getDefault()
+        }.format(Date())
 
+        // 设置输出文件名
+        applicationVariants.all {
+            val variant = this
+            variant.outputs
+                .map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
+                .forEach { output ->
+                    val outputFileName = "ECJTU-Toolbox-${variant.versionName}.apk"
+                    println("OutputFileName: $outputFileName")
+                    output.outputFileName = outputFileName
+                }
+        }
+
+        buildConfigField("String", "BUILD_TIME", "\"$buildTime\"")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -27,6 +59,9 @@ android {
                 "proguard-rules.pro"
             )
         }
+        debug {
+            versionNameSuffix = ".debug"
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -36,6 +71,7 @@ android {
         jvmTarget = "1.8"
     }
     buildFeatures {
+        buildConfig = true
         viewBinding = true
         dataBinding = true
     }
