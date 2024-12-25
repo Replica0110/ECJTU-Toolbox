@@ -50,10 +50,10 @@
 
                             <!-- 图标 -->
                             <ImageView
-                                android:id="@+id/iconLogin"
+                                android:id="@+id/iconElectiveCourse"
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"
-                                android:src="@drawable/ic_wifi_login"
+                                android:src="@drawable/ic_jwxt_elective"
                                 android:contentDescription="图标"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
@@ -61,17 +61,17 @@
 
                             <!-- 文本 -->
                             <TextView
-                                android:id="@+id/textLogin"
+                                android:id="@+id/tvElectiveCourse"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textColor="@color/black"
                                 android:textSize="16sp"
                                 android:layout_marginStart="8dp"
                                 android:gravity="center"
-                                app:layout_constraintStart_toEndOf="@+id/iconLogin"
+                                app:layout_constraintStart_toEndOf="@+id/iconElectiveCourse"
                                 app:layout_constraintTop_toTopOf="parent"
                                 app:layout_constraintBottom_toBottomOf="parent"
-                                tools:text="@string/login"/>
+                                tools:text="选修课"/>
                             <ImageView
                                 android:id="@+id/iconArrow1"
                                 android:layout_width="24dp"
@@ -105,10 +105,10 @@
 
                             <!-- 图标 -->
                             <ImageView
-                                android:id="@+id/iconLogout"
+                                android:id="@+id/iconCourse"
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"
-                                android:src="@drawable/ic_wifi_logout"
+                                android:src="@drawable/ic_jwxt_course"
                                 android:contentDescription="图标"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
@@ -116,17 +116,17 @@
 
                             <!-- 文本 -->
                             <TextView
-                                android:id="@+id/textLogout"
+                                android:id="@+id/tvCourse"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textColor="@color/black"
                                 android:textSize="16sp"
                                 android:layout_marginStart="8dp"
                                 android:gravity="center"
-                                app:layout_constraintStart_toEndOf="@+id/iconLogout"
+                                app:layout_constraintStart_toEndOf="@+id/iconCourse"
                                 app:layout_constraintTop_toTopOf="parent"
                                 app:layout_constraintBottom_toBottomOf="parent"
-                                tools:text="@string/logout"/>
+                                tools:text="必修课"/>
                             <ImageView
                                 android:id="@+id/iconArrow2"
                                 android:layout_width="24dp"
@@ -160,7 +160,7 @@
 
                             <!-- 图标 -->
                             <ImageView
-                                android:id="@+id/iconAccount"
+                                android:id="@+id/iconScore"
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"
                                 android:src="@drawable/ic_wifi_account"
