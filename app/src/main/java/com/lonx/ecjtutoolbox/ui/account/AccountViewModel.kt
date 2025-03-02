@@ -1,16 +1,13 @@
 package com.lonx.ecjtutoolbox.ui.account
 
-import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.Toast
-import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.lonx.ecjtutoolbox.R
@@ -21,7 +18,6 @@ import com.lonx.ecjtutoolbox.utils.StuProfileInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.koin.java.KoinJavaComponent.inject
 import timber.log.Timber
 
 class AccountViewModel(
@@ -57,7 +53,7 @@ class AccountViewModel(
         dialogShowed.value = true
         val context = view1.context
         val builder = MaterialAlertDialogBuilder(context)
-        val view = View.inflate(context, R.layout.dialog_add_account, null)
+        val view = View.inflate(context, R.layout.dialog_account_config, null)
 
         val etStuId = view.findViewById<EditText>(R.id.account_stuid)
         val etStuPassword = view.findViewById<EditText>(R.id.account_passwrod)

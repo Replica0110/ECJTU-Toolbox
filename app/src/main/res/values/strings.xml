@@ -27,4 +27,6 @@
     <string name="logout">注销</string>
     <string name="logging_out">注销中…</string>
     <string name="account_config">账号配置</string>
+    <string name="elective_course">选修课</string>
+    <string name="course">必修课</string>
 </resources>

@@ -53,7 +53,8 @@ class WifiStatusMonitor(
     fun getSSID(context: Context): String? {
         // 检查是否具有位置权限
         if (!hasLocationPermission(context)) {
-            throw SecurityException("Location permission not granted") // 没有权限时抛出异常
+//            throw SecurityException("Location permission not granted") // 没有权限时抛出异常
+            return "未授予位置权限"
         }
 
         val wifiInfo = wifiManager.connectionInfo

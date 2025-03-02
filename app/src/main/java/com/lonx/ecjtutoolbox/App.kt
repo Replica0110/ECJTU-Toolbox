@@ -7,6 +7,7 @@ import android.net.wifi.WifiManager
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache
 import com.lonx.ecjtutoolbox.api.JWXTApi
 import com.lonx.ecjtutoolbox.ui.account.AccountViewModel
+import com.lonx.ecjtutoolbox.ui.jwxt.JWXTViewModel
 import com.lonx.ecjtutoolbox.ui.wifi.WifiFragment
 import com.lonx.ecjtutoolbox.ui.wifi.WifiViewModel
 import com.lonx.ecjtutoolbox.utils.LocationStatusMonitor
@@ -64,6 +65,7 @@ class App: Application() {
             // 提供 ViewModel
             viewModel { WifiViewModel(jwxtApi = get(), wifiStatusMonitor = get(), locationStatusMonitor = get(), preferencesManager = get()) }
             viewModel { AccountViewModel(jwxtApi = get(), preferencesManager = get()) }
+            viewModel { JWXTViewModel(jwxtApi = get(),preferencesManager = get()) }
         }
 
         // 启动Koin

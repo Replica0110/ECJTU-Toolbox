@@ -14,189 +14,24 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:padding="16dp"
+        <LinearLayout
+            android:orientation="vertical"
+            android:padding="12dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:context=".ui.wifi.WifiFragment">
-
+            tools:context=".ui.jwxt.JWXTFragment">
             <com.google.android.material.card.MaterialCardView
-                app:layout_constraintTop_toTopOf="parent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="4dp"
-                android:elevation="2dp"
-                app:strokeWidth="1dp"
-                app:strokeColor="@color/gray"
+                app:cardCornerRadius="10dp"
+                android:elevation="8dp"
                 app:cardUseCompatPadding="true">
-
-                <LinearLayout
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvJwxt"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center_horizontal">
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="8dp"
-                        android:clickable="true"
-                        android:focusable="true">
-
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:padding="8dp">
-
-                            <!-- 图标 -->
-                            <ImageView
-                                android:id="@+id/iconElectiveCourse"
-                                android:layout_width="24dp"
-                                android:layout_height="24dp"
-                                android:src="@drawable/ic_jwxt_elective"
-                                android:contentDescription="图标"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintBottom_toBottomOf="parent" />
-
-                            <!-- 文本 -->
-                            <TextView
-                                android:id="@+id/tvElectiveCourse"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="@color/black"
-                                android:textSize="16sp"
-                                android:layout_marginStart="8dp"
-                                android:gravity="center"
-                                app:layout_constraintStart_toEndOf="@+id/iconElectiveCourse"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                tools:text="选修课"/>
-                            <ImageView
-                                android:id="@+id/iconArrow1"
-                                android:layout_width="24dp"
-                                android:layout_height="24dp"
-                                android:contentDescription="图标"
-                                android:src="@drawable/ic_arrow_right"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintBottom_toBottomOf="parent" />
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-                    </com.google.android.material.card.MaterialCardView>
-                    <View
-                        android:id="@+id/line3"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@android:color/darker_gray"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/iconLogin"
-                        app:layout_constraintEnd_toEndOf="parent"/>
-                    <!-- 注销部分 -->
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clickable="true"
-                        android:focusable="true">
-
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:padding="8dp">
-
-                            <!-- 图标 -->
-                            <ImageView
-                                android:id="@+id/iconCourse"
-                                android:layout_width="24dp"
-                                android:layout_height="24dp"
-                                android:src="@drawable/ic_jwxt_course"
-                                android:contentDescription="图标"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintBottom_toBottomOf="parent"/>
-
-                            <!-- 文本 -->
-                            <TextView
-                                android:id="@+id/tvCourse"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="@color/black"
-                                android:textSize="16sp"
-                                android:layout_marginStart="8dp"
-                                android:gravity="center"
-                                app:layout_constraintStart_toEndOf="@+id/iconCourse"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                tools:text="必修课"/>
-                            <ImageView
-                                android:id="@+id/iconArrow2"
-                                android:layout_width="24dp"
-                                android:layout_height="24dp"
-                                android:contentDescription="图标"
-                                android:src="@drawable/ic_arrow_right"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintBottom_toBottomOf="parent" />
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-                    </com.google.android.material.card.MaterialCardView>
-                    <View
-                        android:id="@+id/line4"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@android:color/darker_gray"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/iconLogout"
-                        app:layout_constraintEnd_toEndOf="parent"/>
-                    <!-- 账号配置部分 -->
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clickable="true"
-                        android:focusable="true">
-
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:padding="8dp">
-
-                            <!-- 图标 -->
-                            <ImageView
-                                android:id="@+id/iconScore"
-                                android:layout_width="24dp"
-                                android:layout_height="24dp"
-                                android:src="@drawable/ic_wifi_account"
-                                android:contentDescription="图标"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintBottom_toBottomOf="parent" />
-
-                            <!-- 文本 -->
-                            <TextView
-                                android:id="@+id/tvAccount"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/account_config"
-                                android:textColor="@color/black"
-                                android:textSize="16sp"
-                                android:layout_marginStart="8dp"
-                                android:gravity="center"
-                                app:layout_constraintStart_toEndOf="@+id/iconAccount"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintBottom_toBottomOf="parent"/>
-                            <ImageView
-                                android:id="@+id/iconArrow3"
-                                android:layout_width="24dp"
-                                android:layout_height="24dp"
-                                android:contentDescription="图标"
-                                android:src="@drawable/ic_arrow_right"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintBottom_toBottomOf="parent" />
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-                    </com.google.android.material.card.MaterialCardView>
-
-                </LinearLayout>
+                    android:layout_height="match_parent"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
             </com.google.android.material.card.MaterialCardView>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
     </ScrollView>
 </layout>

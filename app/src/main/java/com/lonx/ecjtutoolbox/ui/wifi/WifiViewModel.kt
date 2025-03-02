@@ -23,6 +23,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.lonx.ecjtutoolbox.R
 import com.lonx.ecjtutoolbox.api.JWXTApi
 import com.lonx.ecjtutoolbox.api.WifiApi
+import com.lonx.ecjtutoolbox.ui.ClickableItem
+import com.lonx.ecjtutoolbox.utils.AccountConfigHelper
 import com.lonx.ecjtutoolbox.utils.LocationStatus
 import com.lonx.ecjtutoolbox.utils.LocationStatusMonitor
 import com.lonx.ecjtutoolbox.utils.PreferencesManager
@@ -49,8 +51,32 @@ class WifiViewModel(
     val isLoggingIn = MutableLiveData(false)
     val isLoggingOut = MutableLiveData(false)
     val dialogShowed = MutableLiveData(false)
+    val items = MutableLiveData<List<ClickableItem>>()
     private val wifiApi = WifiApi()
     private val LOCATION_PERMISSION_REQUEST_CODE = 100
+    fun loadItems() {
+        val clickableItems = listOf(
+            ClickableItem(
+                icon = R.drawable.ic_wifi_login,
+                text = "登录",
+                subText = "",
+                onClick = { view -> loginIn(view) }
+            ),
+            ClickableItem(
+                icon = R.drawable.ic_wifi_logout,
+                text = "注销",
+                subText = "",
+                onClick = { view -> loginOut(view) }
+            ),
+            ClickableItem(
+                icon = R.drawable.ic_wifi_account,
+                text = "账号配置",
+                subText = "配置个人账号",
+                onClick = { view -> accountConfig(view) }
+            )
+        )
+        this.items.value = clickableItems
+    }
     /**
      * 打开Wi-Fi设置界面
      *
@@ -166,46 +192,14 @@ class WifiViewModel(
                 locationManager?.isProviderEnabled(android.location.LocationManager.NETWORK_PROVIDER) ?: false
     }
 
-    fun accountConfig(view1: View) {
-        if (dialogShowed.value == true) return
-        dialogShowed.value = true
-        val context = view1.context
-        val view = View.inflate(context, R.layout.dialog_add_account, null)
-        val stuIdEditText = view.findViewById<EditText>(R.id.account_stuid)
-        val stuPwdEditText = view.findViewById<EditText>(R.id.account_passwrod)
-        val ispSpinner = view.findViewById<Spinner>(R.id.account_isp)
-        ispSpinner.adapter =
-            ArrayAdapter(context, android.R.layout.simple_spinner_item, ispOptions).apply {
-                setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+    private fun accountConfig(view: View) {
+        AccountConfigHelper(
+            context = view.context,
+            preferencesManager = preferencesManager,
+            onCredentialsUpdate = { newId, newPwd ->
+                jwxtApi.updateInfo(newId, newPwd)
             }
-        val studentId = preferencesManager.getString("student_id", "")
-        val studentPwd = preferencesManager.getString("student_pwd", "")
-        val isp = preferencesManager.getInt("isp", 1)
-        stuIdEditText.setText(studentId)
-        stuPwdEditText.setText(studentPwd)
-        ispSpinner.setSelection(isp - 1)
-        MaterialAlertDialogBuilder(context)
-            .setView(view)
-            .setTitle("账号配置")
-            .setPositiveButton("确定") { _, _ ->
-                // 保存账号配置
-                preferencesManager.putString("student_id", stuIdEditText.text.toString())
-                preferencesManager.putString("student_pwd", stuPwdEditText.text.toString())
-                preferencesManager.putInt("isp", ispSpinner.selectedItemPosition + 1)
-                // 更新JWXT API
-                if (studentId != stuIdEditText.text.toString() || studentPwd != stuPwdEditText.text.toString()) {
-                    jwxtApi.updateInfo(stuIdEditText.text.toString(), stuPwdEditText.text.toString())
-                }
-                dialogShowed.value = false
-            }
-            .setNegativeButton("取消") { dialog, _ ->
-                dialog.dismiss()
-                dialogShowed.value = false
-            }
-            .setOnDismissListener {
-                dialogShowed.value = false
-            }
-            .show()
+        ).showAccountDialog()
     }
 
     fun updateSSID(context: Context) {
@@ -222,8 +216,7 @@ class WifiViewModel(
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    fun loginIn(view: View) {
+    private fun loginIn(view: View) {
         if (isLoggingIn.value == true) return
         if (wifiStatusIcon.get() != R.drawable.ic_wifi_connected) {
             infoDialog(view.context, "登录失败", "请先连接校园网")
@@ -268,8 +261,7 @@ class WifiViewModel(
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    fun loginOut(view: View) {
+    private fun loginOut(view: View) {
         if (isLoggingOut.value == true) return
         if (wifiStatusIcon.get() != R.drawable.ic_wifi_connected) {
             infoDialog(view.context, "注销失败", "请先连接校园网")

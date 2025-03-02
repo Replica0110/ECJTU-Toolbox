@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable name="account" type="com.lonx.ecjtutoolbox.utils.AccountConfigHelper.AccountConfig"/>
+        <variable
+            name="isp"
+            type="com.lonx.ecjtutoolbox.utils.AccountConfigHelper.AccountConfig" />
+    </data>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -21,6 +28,7 @@
             android:id="@+id/account_stuid"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="@={account.studentId}"
             android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
     <com.google.android.material.textfield.TextInputLayout
@@ -34,6 +42,7 @@
             android:id="@+id/account_passwrod"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="@={account.studentPwd}"
             android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
     <com.google.android.material.textfield.TextInputLayout
@@ -49,6 +58,7 @@
             android:layout_height="wrap_content"
             android:dropDownWidth="match_parent"
             android:entries="@array/isp_options"
+            android:selectedItemPosition="@={account.ispIndex}"
             style="@style/SpinnerStyle"/>
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -62,3 +72,4 @@
 
 </LinearLayout>
 </ScrollView>
+</layout>

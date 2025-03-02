@@ -2,9 +2,11 @@ package com.lonx.ecjtutoolbox.api
 
 import com.lonx.ecjtutoolbox.utils.Constants.GET_CLASSES_URL
 import com.lonx.ecjtutoolbox.utils.Constants.WEIXIN_JWXT_URL
+import com.lonx.ecjtutoolbox.utils.PersistentCookieJar
 import com.lonx.ecjtutoolbox.utils.ScheduledCourseInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
@@ -21,7 +23,7 @@ class ScheduledCourseApi(client: JWXTApi) {
     ):List<ScheduledCourseInfo>{
         val response = api.post(GET_CLASSES_URL, mapOf("date" to date))
         val course=response.body?.string()?:"[]"
-        println(course)  // TODO 由于教务系统返回的json数据为空，不实现具体的解析
+        e{course}  // TODO 由于教务系统返回的json数据为空，不实现具体的解析
         return emptyList()
     }
     private fun formattedDate(

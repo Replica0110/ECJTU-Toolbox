@@ -1,0 +1,10 @@
+<resources>
+    <declare-styleable name="ItemCardView">
+        <!-- 图标资源 -->
+        <attr name="iconSrc" format="reference" />
+        <!-- 文本内容 -->
+        <attr name="text" format="string" />
+        
+        <attr name="subText" format="string" />
+    </declare-styleable>
+</resources>

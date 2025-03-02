@@ -23,7 +23,7 @@
         android:networkSecurityConfig="@xml/network_security_config"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name="com.lonx.ecjtutoolbox.MainActivity"
             android:exported="true"
             android:configChanges="orientation|screenSize|smallestScreenSize|layoutDirection|uiMode"
             android:theme="@style/Theme.Ecjtutoolbox.NoActionBar">
@@ -34,7 +34,7 @@
             </intent-filter>
         </activity>
         <service
-            android:name=".service.TileService"
+            android:name="com.lonx.ecjtutoolbox.service.TileService"
             android:exported="true"
             android:label="@string/tile_click2login"
             android:icon="@drawable/tile_icon"
