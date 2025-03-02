@@ -1,4 +1,4 @@
-package com.lonx.ecjtutoolbox.ui.wifi
+package com.lonx.ecjtutoolbox.viewmodels
 
 import android.Manifest
 import android.app.Activity
@@ -9,9 +9,6 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.provider.Settings
 import android.view.View
-import android.widget.ArrayAdapter
-import android.widget.EditText
-import android.widget.Spinner
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.requestPermissions
@@ -19,11 +16,10 @@ import androidx.databinding.ObservableField
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.lonx.ecjtutoolbox.R
 import com.lonx.ecjtutoolbox.api.JWXTApi
 import com.lonx.ecjtutoolbox.api.WifiApi
-import com.lonx.ecjtutoolbox.ui.ClickableItem
+import com.lonx.ecjtutoolbox.data.ClickableItem
 import com.lonx.ecjtutoolbox.utils.AccountConfigHelper
 import com.lonx.ecjtutoolbox.utils.LocationStatus
 import com.lonx.ecjtutoolbox.utils.LocationStatusMonitor

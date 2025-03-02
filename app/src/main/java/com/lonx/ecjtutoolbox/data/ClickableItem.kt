@@ -1,4 +1,4 @@
-package com.lonx.ecjtutoolbox.ui
+package com.lonx.ecjtutoolbox.data
 
 import android.view.View
 import com.lonx.ecjtutoolbox.R

@@ -1,10 +1,10 @@
-package com.lonx.ecjtutoolbox.utils
+package com.lonx.ecjtutoolbox.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.lonx.ecjtutoolbox.databinding.ItemClickableCardBinding
-import com.lonx.ecjtutoolbox.ui.ClickableItem
+import com.lonx.ecjtutoolbox.data.ClickableItem
 
 
 class ItemClickableAdapter(private var clickableItems: List<ClickableItem>) :

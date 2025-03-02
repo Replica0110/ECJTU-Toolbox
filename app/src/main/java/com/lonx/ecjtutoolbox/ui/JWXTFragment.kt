@@ -1,4 +1,4 @@
-package com.lonx.ecjtutoolbox.ui.jwxt
+package com.lonx.ecjtutoolbox.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,7 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.lonx.ecjtutoolbox.databinding.FragmentJwxtBinding
-import com.lonx.ecjtutoolbox.utils.ItemClickableAdapter
+import com.lonx.ecjtutoolbox.adapters.ItemClickableAdapter
+import com.lonx.ecjtutoolbox.viewmodels.JWXTViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 class JWXTFragment : Fragment() {
 

@@ -7,10 +7,10 @@
     <data>
         <variable
             name="viewModel"
-            type="com.lonx.ecjtutoolbox.ui.wifi.WifiViewModel" />
+            type="com.lonx.ecjtutoolbox.viewmodels.WifiViewModel" />
         <variable
             name="fragment"
-            type="com.lonx.ecjtutoolbox.ui.wifi.WifiFragment" />
+            type="com.lonx.ecjtutoolbox.ui.WifiFragment" />
     </data>
 <ScrollView
     android:layout_width="match_parent"
@@ -20,7 +20,7 @@
         android:padding="12dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".ui.wifi.WifiFragment">
+        tools:context=".ui.WifiFragment">
 
         <!-- WiFi状态信息 -->
         <com.google.android.material.card.MaterialCardView

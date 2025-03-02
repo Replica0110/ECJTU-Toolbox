@@ -1,4 +1,4 @@
-package com.lonx.ecjtutoolbox.ui.account
+package com.lonx.ecjtutoolbox.viewmodels
 
 import android.view.View
 import android.widget.ArrayAdapter
@@ -14,7 +14,7 @@ import com.lonx.ecjtutoolbox.R
 import com.lonx.ecjtutoolbox.api.JWXTApi
 import com.lonx.ecjtutoolbox.utils.LoginResult
 import com.lonx.ecjtutoolbox.utils.PreferencesManager
-import com.lonx.ecjtutoolbox.utils.StuProfileInfo
+import com.lonx.ecjtutoolbox.data.StuProfileInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

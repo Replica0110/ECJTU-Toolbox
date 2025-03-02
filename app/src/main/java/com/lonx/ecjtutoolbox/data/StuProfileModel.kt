@@ -1,7 +1,6 @@
-package com.lonx.ecjtutoolbox.models
+package com.lonx.ecjtutoolbox.data
 
 import androidx.databinding.BaseObservable
-import com.lonx.ecjtutoolbox.utils.StuProfileInfo
 import kotlinx.serialization.Serializable
 
 @Serializable

@@ -1,4 +1,4 @@
-package com.lonx.ecjtutoolbox.utils
+package com.lonx.ecjtutoolbox.data
 
 object Constants {
     const val USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/58.0.3029.110 Safari/537.3"

@@ -1,15 +1,11 @@
-package com.lonx.ecjtutoolbox.ui.jwxt
+package com.lonx.ecjtutoolbox.viewmodels
 
 import android.view.View
-import android.widget.ArrayAdapter
-import android.widget.EditText
-import android.widget.Spinner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.lonx.ecjtutoolbox.R
 import com.lonx.ecjtutoolbox.api.JWXTApi
-import com.lonx.ecjtutoolbox.ui.ClickableItem
+import com.lonx.ecjtutoolbox.data.ClickableItem
 import com.lonx.ecjtutoolbox.utils.AccountConfigHelper
 import com.lonx.ecjtutoolbox.utils.PreferencesManager
 

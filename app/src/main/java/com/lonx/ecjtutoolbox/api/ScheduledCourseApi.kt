@@ -1,12 +1,10 @@
 package com.lonx.ecjtutoolbox.api
 
-import com.lonx.ecjtutoolbox.utils.Constants.GET_CLASSES_URL
-import com.lonx.ecjtutoolbox.utils.Constants.WEIXIN_JWXT_URL
-import com.lonx.ecjtutoolbox.utils.PersistentCookieJar
-import com.lonx.ecjtutoolbox.utils.ScheduledCourseInfo
+import com.lonx.ecjtutoolbox.data.Constants.GET_CLASSES_URL
+import com.lonx.ecjtutoolbox.data.Constants.WEIXIN_JWXT_URL
+import com.lonx.ecjtutoolbox.data.ScheduledCourseInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okhttp3.OkHttpClient
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element

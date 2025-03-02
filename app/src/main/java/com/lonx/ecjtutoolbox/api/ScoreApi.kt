@@ -1,9 +1,8 @@
 package com.lonx.ecjtutoolbox.api
 
 
-import android.util.Log
-import com.lonx.ecjtutoolbox.utils.Constants.GET_GPA_URL
-import com.lonx.ecjtutoolbox.utils.ScoreInfo
+import com.lonx.ecjtutoolbox.data.Constants.GET_GPA_URL
+import com.lonx.ecjtutoolbox.data.ScoreInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup

@@ -1,15 +1,12 @@
 package com.lonx.ecjtutoolbox.api
 
-import android.util.Log
-import com.lonx.ecjtutoolbox.utils.Constants.GET_ELERTIVE_COURSE_URL_TEMPLATE
-import com.lonx.ecjtutoolbox.utils.ElectiveCourseInfo
+import com.lonx.ecjtutoolbox.data.Constants.GET_ELERTIVE_COURSE_URL_TEMPLATE
+import com.lonx.ecjtutoolbox.data.ElectiveCourseInfo
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
-import org.koin.java.KoinJavaComponent.inject
 import slimber.log.e
 
 class ElectiveCourseApi(client: JWXTApi) {

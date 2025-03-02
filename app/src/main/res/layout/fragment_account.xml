@@ -6,10 +6,10 @@
     <data>
         <variable
             name="info"
-            type="com.lonx.ecjtutoolbox.utils.StuProfileInfo" />
+            type="com.lonx.ecjtutoolbox.data.StuProfileInfo" />
         <variable
             name="viewModel"
-            type="com.lonx.ecjtutoolbox.ui.account.AccountViewModel" />
+            type="com.lonx.ecjtutoolbox.viewmodels.AccountViewModel" />
     </data>
     <ScrollView
         android:layout_width="match_parent"
@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
-        tools:context=".ui.account.AccountFragment">
+        tools:context=".ui.AccountFragment">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardInfo"

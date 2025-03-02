@@ -3,7 +3,7 @@
     <data>
         <variable
             name="item"
-            type="com.lonx.ecjtutoolbox.ui.ClickableItem" />
+            type="com.lonx.ecjtutoolbox.data.ClickableItem" />
         <import type="android.view.View" />
     </data>
 

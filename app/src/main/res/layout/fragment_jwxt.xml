@@ -6,10 +6,10 @@
     <data>
         <variable
             name="viewModel"
-            type="com.lonx.ecjtutoolbox.ui.jwxt.JWXTViewModel" />
+            type="com.lonx.ecjtutoolbox.viewmodels.JWXTViewModel" />
         <variable
             name="fragment"
-            type="com.lonx.ecjtutoolbox.ui.jwxt.JWXTFragment" />
+            type="com.lonx.ecjtutoolbox.ui.JWXTFragment" />
     </data>
     <ScrollView
         android:layout_width="match_parent"
@@ -19,7 +19,7 @@
             android:padding="12dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:context=".ui.jwxt.JWXTFragment">
+            tools:context=".ui.JWXTFragment">
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

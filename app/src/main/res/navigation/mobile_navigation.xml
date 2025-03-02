@@ -7,22 +7,22 @@
 
     <fragment
         android:id="@+id/nav_jwxt"
-        android:name="com.lonx.ecjtutoolbox.ui.jwxt.JWXTFragment"
+        android:name="com.lonx.ecjtutoolbox.ui.JWXTFragment"
         android:label="@string/menu_jwxt"
         tools:layout="@layout/fragment_jwxt" />
     <fragment
         android:id="@+id/nav_account"
-        android:name="com.lonx.ecjtutoolbox.ui.account.AccountFragment"
+        android:name="com.lonx.ecjtutoolbox.ui.AccountFragment"
         android:label="@string/menu_account"
         tools:layout="@layout/fragment_account" />
     <fragment
         android:id="@+id/nav_wifi"
-        android:name="com.lonx.ecjtutoolbox.ui.wifi.WifiFragment"
+        android:name="com.lonx.ecjtutoolbox.ui.WifiFragment"
         android:label="@string/menu_wifi"
         tools:layout="@layout/fragment_wifi" />
     <fragment
         android:id="@+id/nav_about"
-        android:name="com.lonx.ecjtutoolbox.ui.about.AboutFragment"
+        android:name="com.lonx.ecjtutoolbox.ui.AboutFragment"
         android:label="@string/menu_about"
         tools:layout="@layout/fragment_about" />
 

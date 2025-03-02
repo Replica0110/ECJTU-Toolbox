@@ -1,13 +1,12 @@
-package com.lonx.ecjtutoolbox.ui.account
+package com.lonx.ecjtutoolbox.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.lonx.ecjtutoolbox.api.JWXTApi
 import com.lonx.ecjtutoolbox.databinding.FragmentAccountBinding
-import org.koin.android.ext.android.inject
+import com.lonx.ecjtutoolbox.viewmodels.AccountViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AccountFragment : Fragment() {

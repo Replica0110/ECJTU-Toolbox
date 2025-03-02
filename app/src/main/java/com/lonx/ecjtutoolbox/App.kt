@@ -6,10 +6,10 @@ import android.net.ConnectivityManager
 import android.net.wifi.WifiManager
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache
 import com.lonx.ecjtutoolbox.api.JWXTApi
-import com.lonx.ecjtutoolbox.ui.account.AccountViewModel
-import com.lonx.ecjtutoolbox.ui.jwxt.JWXTViewModel
-import com.lonx.ecjtutoolbox.ui.wifi.WifiFragment
-import com.lonx.ecjtutoolbox.ui.wifi.WifiViewModel
+import com.lonx.ecjtutoolbox.viewmodels.AccountViewModel
+import com.lonx.ecjtutoolbox.viewmodels.JWXTViewModel
+import com.lonx.ecjtutoolbox.ui.WifiFragment
+import com.lonx.ecjtutoolbox.viewmodels.WifiViewModel
 import com.lonx.ecjtutoolbox.utils.LocationStatusMonitor
 import com.lonx.ecjtutoolbox.utils.MyOkHttpClient
 import com.lonx.ecjtutoolbox.utils.PersistentCookieJar

@@ -1,4 +1,4 @@
-package com.lonx.ecjtutoolbox.ui.about
+package com.lonx.ecjtutoolbox.viewmodels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

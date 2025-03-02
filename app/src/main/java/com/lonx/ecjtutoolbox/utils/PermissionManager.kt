@@ -1,4 +1,4 @@
-package com.lonx.ecjtutoolbox.ui
+package com.lonx.ecjtutoolbox.utils
 
 import android.app.Activity
 import android.content.pm.PackageManager

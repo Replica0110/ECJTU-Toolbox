@@ -1,4 +1,4 @@
-package com.lonx.ecjtutoolbox.utils
+package com.lonx.ecjtutoolbox.adapters
 
 
 import android.widget.ImageView
