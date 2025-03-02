@@ -8,8 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import com.lonx.ecjtutoolbox.adapters.ItemAdapter
 import com.lonx.ecjtutoolbox.databinding.FragmentWifiBinding
-import com.lonx.ecjtutoolbox.adapters.ItemClickableAdapter
 import com.lonx.ecjtutoolbox.viewmodels.WifiViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -18,7 +18,7 @@ class WifiFragment : Fragment() {
     private val binding get() = _binding!!
     private val wifiViewModel: WifiViewModel by viewModel()
     private val LOCATION_PERMISSION_REQUEST_CODE = 100
-    private lateinit var adapter: ItemClickableAdapter
+    private lateinit var adapter: ItemAdapter
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -31,7 +31,8 @@ class WifiFragment : Fragment() {
         return binding.root
     }
     private fun setupRecyclerView() {
-        adapter = ItemClickableAdapter(emptyList())
+        adapter = ItemAdapter()
+        binding.rvWifi.setHasFixedSize(true)
         binding.rvWifi.adapter = adapter
     }
     @Deprecated("Deprecated in Java")

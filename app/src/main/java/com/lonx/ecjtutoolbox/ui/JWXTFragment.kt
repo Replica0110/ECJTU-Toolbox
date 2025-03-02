@@ -5,18 +5,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.lonx.ecjtutoolbox.adapters.ItemAdapter
 import com.lonx.ecjtutoolbox.databinding.FragmentJwxtBinding
-import com.lonx.ecjtutoolbox.adapters.ItemClickableAdapter
 import com.lonx.ecjtutoolbox.viewmodels.JWXTViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 class JWXTFragment : Fragment() {
 
     private var _binding: FragmentJwxtBinding? = null
     private val jwxtViewModel: JWXTViewModel by viewModel()
-    private lateinit var adapter: ItemClickableAdapter
+    private lateinit var adapter: ItemAdapter
     private val binding get() = _binding!!
     private fun setupRecyclerView() {
-        adapter = ItemClickableAdapter(emptyList())
+        adapter = ItemAdapter()
+        binding.rvJwxt.setHasFixedSize(true)
         binding.rvJwxt.adapter = adapter
     }
     override fun onCreateView(

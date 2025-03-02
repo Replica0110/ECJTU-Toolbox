@@ -19,6 +19,7 @@ import androidx.lifecycle.viewModelScope
 import com.lonx.ecjtutoolbox.R
 import com.lonx.ecjtutoolbox.api.JWXTApi
 import com.lonx.ecjtutoolbox.api.WifiApi
+import com.lonx.ecjtutoolbox.data.BaseItem
 import com.lonx.ecjtutoolbox.data.ClickableItem
 import com.lonx.ecjtutoolbox.utils.AccountConfigHelper
 import com.lonx.ecjtutoolbox.utils.LocationStatus
@@ -39,19 +40,17 @@ class WifiViewModel(
     private val locationStatusMonitor: LocationStatusMonitor,
     private val preferencesManager: PreferencesManager
 ) : ViewModel() {
-    private val ispOptions = arrayOf("中国电信", "中国移动", "中国联通")
     val wifiStatusIcon = ObservableField(R.drawable.ic_wifi_disabled)
     val wifiStatusText = ObservableField("WLAN 未启用")
     val ssid1 = ObservableField("当前无连接")
     val isLocationEnabled = ObservableField(false)
-    val isLoggingIn = MutableLiveData(false)
-    val isLoggingOut = MutableLiveData(false)
-    val dialogShowed = MutableLiveData(false)
-    val items = MutableLiveData<List<ClickableItem>>()
+    private val isLoggingIn = MutableLiveData(false)
+    private val isLoggingOut = MutableLiveData(false)
+    val items = MutableLiveData<List<BaseItem>>()
     private val wifiApi = WifiApi()
     private val LOCATION_PERMISSION_REQUEST_CODE = 100
     fun loadItems() {
-        val clickableItems = listOf(
+        val items = listOf(
             ClickableItem(
                 icon = R.drawable.ic_wifi_login,
                 text = "登录",
@@ -65,13 +64,13 @@ class WifiViewModel(
                 onClick = { view -> loginOut(view) }
             ),
             ClickableItem(
-                icon = R.drawable.ic_wifi_account,
+                icon = R.drawable.ic_menu_account,
                 text = "账号配置",
-                subText = "配置个人账号",
+                subText = "配置账号密码及运营商",
                 onClick = { view -> accountConfig(view) }
             )
         )
-        this.items.value = clickableItems
+        this.items.value = items
     }
     /**
      * 打开Wi-Fi设置界面

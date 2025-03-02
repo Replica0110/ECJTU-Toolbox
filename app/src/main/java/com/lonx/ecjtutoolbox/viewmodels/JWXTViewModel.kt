@@ -14,8 +14,6 @@ class JWXTViewModel(
     private val preferencesManager: PreferencesManager
 ) : ViewModel() {
     val items = MutableLiveData<List<ClickableItem>>()
-    private val ispOptions = arrayOf("中国电信", "中国移动", "中国联通")
-    private val dialogShowed = MutableLiveData(false)
     fun loadItems() {
         val clickableItems = listOf(
             ClickableItem(
@@ -31,9 +29,9 @@ class JWXTViewModel(
                 onClick = { view -> openScheduleCourse(view) }
             ),
             ClickableItem(
-                icon = R.drawable.ic_wifi_account,
+                icon = R.drawable.ic_menu_account,
                 text = "账号配置",
-                subText = "配置个人账号",
+                subText = "配置账号密码及运营商",
                 onClick = { view -> accountConfig(view) }
             )
         )
