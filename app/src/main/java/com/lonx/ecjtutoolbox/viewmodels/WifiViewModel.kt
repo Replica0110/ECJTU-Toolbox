@@ -19,8 +19,6 @@ import androidx.lifecycle.viewModelScope
 import com.lonx.ecjtutoolbox.R
 import com.lonx.ecjtutoolbox.api.JWXTApi
 import com.lonx.ecjtutoolbox.api.WifiApi
-import com.lonx.ecjtutoolbox.data.BaseItem
-import com.lonx.ecjtutoolbox.data.ClickableItem
 import com.lonx.ecjtutoolbox.utils.AccountConfigHelper
 import com.lonx.ecjtutoolbox.utils.LocationStatus
 import com.lonx.ecjtutoolbox.utils.LocationStatusMonitor
@@ -46,41 +44,10 @@ class WifiViewModel(
     val isLocationEnabled = ObservableField(false)
     private val isLoggingIn = MutableLiveData(false)
     private val isLoggingOut = MutableLiveData(false)
-    val items = MutableLiveData<List<BaseItem>>()
+    private val _isAccountDialogShowing = MutableLiveData(false)
     private val wifiApi = WifiApi()
     private val LOCATION_PERMISSION_REQUEST_CODE = 100
-    fun loadItems() {
-        val items = listOf(
-            ClickableItem(
-                icon = R.drawable.ic_wifi_login,
-                text = "登录",
-                subText = "",
-                onClick = { view -> loginIn(view) }
-            ),
-            ClickableItem(
-                icon = R.drawable.ic_wifi_logout,
-                text = "注销",
-                subText = "",
-                onClick = { view -> loginOut(view) }
-            ),
-            ClickableItem(
-                icon = R.drawable.ic_menu_account,
-                text = "账号配置",
-                subText = "配置账号密码及运营商",
-                onClick = { view -> accountConfig(view) }
-            )
-        )
-        this.items.value = items
-    }
-    /**
-     * 打开Wi-Fi设置界面
-     *
-     * 此函数用于在当前应用中打开系统的Wi-Fi设置界面它创建了一个意图，
-     * 指定要执行的操作是打开Wi-Fi设置，并添加了标志以确保该操作在一个新的任务中启动
-     * 这是为了处理用户可能需要配置Wi-Fi网络的情况，提供了一种简便的方式直接访问设置界面
-     *
-     * @param view 触发此动作的视图对象，用于获取上下文信息
-     */
+
     fun openWifiSettings(view: View) {
         // 获取视图所在的上下文，用于启动活动
         val context = view.context
@@ -95,18 +62,6 @@ class WifiViewModel(
         context.startActivity(intent)
     }
 
-    /**
-     * 观察Wi-Fi和定位状态的变化，并更新UI
-     *
-     * @param context 上下文，用于在更新UI时访问资源或进行与UI相关的操作
-     *
-     * 注：该函数需要Android API级别为TIRAMISU或更高版本
-     * 功能描述：
-     * 1. 在视图模型范围内启动一个协程，用于观察Wi-Fi和定位状态的变化
-     * 2. 使用combine函数组合wifiStatus和locationStatus的流，将它们配对以便同时处理
-     * 3. collectLatest确保在任何时刻只有一个活跃的收集操作，避免了背压问题
-     * 4. 每当状态发生变化时，调用updateUi函数更新UI，以反映当前的Wi-Fi和定位状态
-     */
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     fun observeStatuses(context: Context) {
         viewModelScope.launch {
@@ -120,7 +75,6 @@ class WifiViewModel(
             }
         }
     }
-
 
     fun checkAndRequestPermissions(view: View) {
         val context = view.context
@@ -187,12 +141,17 @@ class WifiViewModel(
                 locationManager?.isProviderEnabled(android.location.LocationManager.NETWORK_PROVIDER) ?: false
     }
 
-    private fun accountConfig(view: View) {
+    fun accountConfig(view: View) {
+        if (_isAccountDialogShowing.value == true) return
+        _isAccountDialogShowing.value = true
         AccountConfigHelper(
             context = view.context,
             preferencesManager = preferencesManager,
             onCredentialsUpdate = { newId, newPwd ->
                 jwxtApi.updateInfo(newId, newPwd)
+            },
+            onDismiss = {
+                _isAccountDialogShowing.value = false
             }
         ).showAccountDialog()
     }
@@ -211,7 +170,7 @@ class WifiViewModel(
         }
     }
 
-    private fun loginIn(view: View) {
+    fun loginIn(view: View) {
         if (isLoggingIn.value == true) return
         if (wifiStatusIcon.get() != R.drawable.ic_wifi_connected) {
             infoDialog(view.context, "登录失败", "请先连接校园网")
@@ -256,7 +215,7 @@ class WifiViewModel(
         }
     }
 
-    private fun loginOut(view: View) {
+    fun loginOut(view: View) {
         if (isLoggingOut.value == true) return
         if (wifiStatusIcon.get() != R.drawable.ic_wifi_connected) {
             infoDialog(view.context, "注销失败", "请先连接校园网")
@@ -338,6 +297,5 @@ class WifiViewModel(
             LocationStatus.Unknown -> {
             }
         }
-        }
-
+    }
 }

@@ -8,7 +8,8 @@ import com.lonx.ecjtutoolbox.databinding.DialogAccountConfigBinding
 class AccountConfigHelper(
     private val context: Context,
     private val preferencesManager: PreferencesManager,
-    private val onCredentialsUpdate: (newId: String, newPwd: String) -> Unit
+    private val onCredentialsUpdate: (newId: String, newPwd: String) -> Unit,
+    private val onDismiss: () -> Unit
 ) {
     // 数据绑定类
     data class AccountConfig(
@@ -40,10 +41,14 @@ class AccountConfigHelper(
                         onCredentialsUpdate(config.studentId, config.studentPwd)
                     }
                 }
+                onDismiss()
             }
-            .setNegativeButton("取消", null)
+            .setNegativeButton("取消"){ _, _ ->
+                onDismiss()
+            }
             .setOnDismissListener {
                 // 清理绑定引用
+                onDismiss()
                 binding.unbind()
             }
             .show()

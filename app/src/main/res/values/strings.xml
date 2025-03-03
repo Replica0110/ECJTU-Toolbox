@@ -15,7 +15,7 @@
     <string name="dialog_account_login_btn">登录</string>
     <string name="menu_wifi">校园网</string>
     <string name="layout_empty_text">暂无数据</string>
-    <string name="menu_score">成绩查询</string>
+    <string name="jwxt_score">成绩查询</string>
     <string name="menu_gpa">绩点查询</string>
     <string name="add">添加账号</string>
     <string name="dialog_account_tips">使用校园网时需要选择运营商以登录，若不需要可不选择</string>
@@ -29,4 +29,7 @@
     <string name="account_config">账号配置</string>
     <string name="elective_course">选修课</string>
     <string name="course">必修课</string>
+    <string name="schedule_course">必修课</string>
+    <string name="account_refresh">刷新登录</string>
+    <string name="account_refresh_sub">启动应用时刷新登录以更新cookies</string>
 </resources>

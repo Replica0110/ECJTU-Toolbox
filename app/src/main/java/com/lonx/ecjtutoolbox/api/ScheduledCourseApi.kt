@@ -1,6 +1,7 @@
 package com.lonx.ecjtutoolbox.api
 
 import com.lonx.ecjtutoolbox.data.Constants.GET_CLASSES_URL
+import com.lonx.ecjtutoolbox.data.Constants.GET_GPA_URL
 import com.lonx.ecjtutoolbox.data.Constants.WEIXIN_JWXT_URL
 import com.lonx.ecjtutoolbox.data.ScheduledCourseInfo
 import kotlinx.coroutines.Dispatchers
@@ -93,4 +94,8 @@ class ScheduledCourseApi(client: JWXTApi) {
 
     }
 
+}
+fun main(){
+    println(GET_CLASSES_URL)
+    println(GET_GPA_URL)
 }
