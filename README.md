@@ -1,3 +1,5 @@
+# 项目已迁移到[ECJTU-PDA](https://github.com/Replica0110/ECJTU-PDA)
+
 ## 待添加的功能
 ### 个人信息url
 （包含学号、在班编号、
